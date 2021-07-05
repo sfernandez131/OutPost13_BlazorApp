@@ -1,0 +1,30 @@
+﻿@page "/counter"
+
+<h1>Counter App</h1>
+
+<p>Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">@Click</button>
+
+@code {
+    public string Click { get; set; } = "Click me!";
+
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+
+        if (currentCount == 10)
+        {
+            Click = "Don't Click!";
+            
+            Explode();
+        }
+    }
+
+    private void Explode()
+    {
+        currentCount = -40;
+    }
+}
