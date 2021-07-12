@@ -17,7 +17,7 @@
 
   <ItemGroup>
     <Reference Include="LumenWorks.Framework.IO">
-      <HintPath>..\GSWEBAPI\Jornaya_IRIS\bin\Debug\LumenWorks.Framework.IO.dll</HintPath>
+      <HintPath>LumenWorks.Framework.IO.dll</HintPath>
     </Reference>
   </ItemGroup>
 
