@@ -51,7 +51,7 @@ namespace OutPost13.Data
             var csvTable = new DataTable();
             string latLon = "";
 
-            using (var csvReader = new CsvReader(new StreamReader(File.OpenRead(@".\zip_LATLONG_db.csv")), true))
+            using (var csvReader = new CsvReader(new StreamReader(File.OpenRead(@"wwwroot\zip_LATLONG_db.csv")), true))
             {
                 csvTable.Load(csvReader);
             }
