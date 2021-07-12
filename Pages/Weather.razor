@@ -1,4 +1,4 @@
-﻿@page "/fetchdata"
+﻿@page "/weather"
 
 @using OutPost13.Data
 @inject WeatherForecastService ForecastService
@@ -6,10 +6,13 @@
 <h1>Weather forecast</h1>
 
 <p>This component demonstrates fetching data from a service.</p>
+<p>Enter your ZIP code to fetch weather data: </p>
+
+<input type="text" @bind-value="@ZIP" @bind-value:event="oninput" @onkeydown="@Enter"/>
 
 @if (forecasts == null)
 {
-    <p><em>Loading...</em></p>
+    <p><em>Please Enter Your ZIP</em></p>
 }
 else
 {
@@ -26,7 +29,7 @@ else
             @foreach (var forecast in forecasts)
             {
                 <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
+                    <td>@forecast.Date</td>
                     <td>@forecast.TemperatureC</td>
                     <td>@forecast.TemperatureF</td>
                     <td>@forecast.Summary</td>
@@ -37,10 +40,20 @@ else
 }
 
 @code {
-    private WeatherForecast[] forecasts;
+    private string ZIP;
+    private List<WeatherForecast> forecasts;
 
-    protected override async Task OnInitializedAsync()
+    public void GetWeatherForcast()
     {
-        forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
+        forecasts = ForecastService.GetForecast(ZIP);
+        StateHasChanged();
+    }
+
+    public void Enter(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            GetWeatherForcast();
+        }
     }
 }
