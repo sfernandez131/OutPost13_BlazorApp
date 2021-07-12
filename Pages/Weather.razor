@@ -8,7 +8,8 @@
 <p>This component demonstrates fetching data from a service.</p>
 <p>Enter your ZIP code to fetch weather data: </p>
 
-<input type="text" @bind-value="@ZIP" @bind-value:event="oninput" @onkeydown="@Enter"/>
+<input type="text" @bind-value="@ZIP" @bind-value:event="oninput" @onkeypress="@Enter"/>
+<button @onclick="@GetWeatherForcast">Go</button>
 
 @if (forecasts == null)
 {
