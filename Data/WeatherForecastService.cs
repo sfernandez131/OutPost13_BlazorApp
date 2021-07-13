@@ -43,7 +43,8 @@ namespace OutPost13.Data
                 {
                     Date = result.startTime.ToString("MM/dd/yyyy H:mm:ss") + " to " + result.endTime.ToString("H:mm:ss"),
                     Summary = result.shortForecast,
-                    TemperatureF = result.temperature
+                    TemperatureF = result.temperature,
+                    Icon = result.icon
                 });
             }
 

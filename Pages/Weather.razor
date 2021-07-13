@@ -37,12 +37,13 @@ else
             <tbody>
                 @foreach (var forecast in forecasts)
                 {
-                    <tr>
-                        <td>@forecast.Date</td>
+                    <tr style="@GetBGColor(bgColorTR[s])" @onload="@(() => { bgColorTR[s] = bgColorTR[s] == true ? false : true; })">
+                        <td >@forecast.Date</td>
                         <td>@forecast.TemperatureC</td>
                         <td>@forecast.TemperatureF</td>
-                        <td>@forecast.Summary</td>
+                        <td><img src="@forecast.Icon" class="rounded-circle" style="max-height:50px; margin-right:5px">@forecast.Summary</td>
                     </tr>
+                    s = s == 0 ? 1 : 0;
                 }
             </tbody>
         </table>
@@ -50,11 +51,28 @@ else
 }
 
 @code {
+    int s = 0;
+    Dictionary<int, bool> bgColorTR = new Dictionary<int, bool>
+    {
+        { 0, true },
+        { 1, false }
+    };
+
     private Animate anim;
 
     private void RunAnimation()
     {
         anim.Run();
+    }
+
+    string GetBGColor(bool isSelected)
+    {
+        if (isSelected)
+        {
+            return "background-color:lightgray";
+        }
+        else
+            return "background-color:white";
     }
 
     private string ZIP;
