@@ -1,6 +1,9 @@
 ﻿@page "/weather"
 
 @using OutPost13.Data
+@using System.Threading;
+@using BlazorAnimate;
+
 @inject WeatherForecastService ForecastService
 
 <h1>Weather forecast</h1>
@@ -8,44 +11,63 @@
 <p>This component demonstrates fetching data from a service.</p>
 <p>Enter your ZIP code to fetch weather data: </p>
 
-<input type="text" @bind-value="@ZIP" @bind-value:event="oninput" @onkeypress="@Enter"/>
+<input type="text" @bind-value="@ZIP" @bind-value:event="oninput" @onkeypress="@Enter" />
 <button @onclick="@GetWeatherForcast">Go</button>
 
-@if (forecasts == null)
+@if (forecasts == null && isProcessing)
+{
+    <p><em>Loading...</em></p>
+}
+else if (forecasts == null && !isProcessing)
 {
     <p><em>Please Enter Your ZIP</em></p>
 }
 else
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var forecast in forecasts)
-            {
+    <Animate Animation="Animations.SlideLeft" Once="false" Duration="TimeSpan.FromSeconds(.5)" @ref="@anim" IsManual="false">
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>@forecast.Date</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
+                    <th>Date</th>
+                    <th>Temp. (C)</th>
+                    <th>Temp. (F)</th>
+                    <th>Summary</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var forecast in forecasts)
+                {
+                    <tr>
+                        <td>@forecast.Date</td>
+                        <td>@forecast.TemperatureC</td>
+                        <td>@forecast.TemperatureF</td>
+                        <td>@forecast.Summary</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </Animate>
 }
 
 @code {
+    private Animate anim;
+
+    private void RunAnimation()
+    {
+        anim.Run();
+    }
+
     private string ZIP;
     private List<WeatherForecast> forecasts;
 
+    bool isProcessing = false;
+
     public void GetWeatherForcast()
     {
+        if (string.IsNullOrEmpty(ZIP))
+        {
+            return;
+        }
         forecasts = ForecastService.GetForecast(ZIP);
         StateHasChanged();
     }
@@ -54,6 +76,8 @@ else
     {
         if (e.Code == "Enter" || e.Code == "NumpadEnter")
         {
+            isProcessing = true;
+            StateHasChanged();
             GetWeatherForcast();
         }
     }

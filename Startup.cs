@@ -1,15 +1,10 @@
+using Blazorise;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using OutPost13.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace OutPost13
 {
@@ -29,6 +24,7 @@ namespace OutPost13
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
+            services.AddBlazorise(options => { options.ChangeTextOnKeyPress = true; });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

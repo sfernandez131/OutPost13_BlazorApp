@@ -33,6 +33,10 @@ namespace OutPost13.Data
 
             var results2 = JsonConvert.DeserializeObject<HourlyWeatherData>(response2.Content);
 
+            if (results2.properties is null)
+            {
+                return WeatherListData;
+            }
             foreach(var result in results2.properties.periods)
             {
                 WeatherListData.Add(new WeatherForecast()

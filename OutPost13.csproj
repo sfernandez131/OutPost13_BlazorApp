@@ -10,8 +10,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="BlazorAnimate" Version="3.0.0" />
+    <PackageReference Include="Blazorise" Version="0.9.3.10" />
+    <PackageReference Include="Blazorise.Bootstrap" Version="0.9.3.10" />
+    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="0.9.3.10" />
     <PackageReference Include="CsvHelper" Version="12.3.2" />
-    <PackageReference Include="Microsoft.Azure.SignalR" Version="1.4.0" />
+    <PackageReference Include="Microsoft.Azure.SignalR" Version="1.9.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="RestSharp" Version="106.11.7" />
   </ItemGroup>
