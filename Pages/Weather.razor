@@ -16,7 +16,7 @@
 
 @if (forecasts == null && isProcessing)
 {
-    <p><em>Loading...</em></p>
+    <p><em>ZIP could not be found...</em></p>
 }
 else if (forecasts == null && !isProcessing)
 {
@@ -41,7 +41,7 @@ else
                         <td >@forecast.Date</td>
                         <td>@forecast.TemperatureC</td>
                         <td>@forecast.TemperatureF</td>
-                        <td><img src="@forecast.Icon" class="rounded-circle" style="max-height:50px; margin-right:5px">@forecast.Summary</td>
+                        <td><img src="@forecast.Icon" class="rounded-lg" style="max-height:80px; margin-right:5px">@forecast.Summary</td>
                     </tr>
                     s = s == 0 ? 1 : 0;
                 }

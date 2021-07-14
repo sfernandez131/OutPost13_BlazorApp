@@ -16,6 +16,11 @@ namespace OutPost13.Data
 
             string latLong = GetLatLong(zip);
 
+            if (string.IsNullOrEmpty(latLong))
+            {
+                return null;
+            }
+
             var client = new RestClient($"https://api.weather.gov/points/{latLong}");
             client.Timeout = -1;
             var request = new RestRequest(Method.GET);
