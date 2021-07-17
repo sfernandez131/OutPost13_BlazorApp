@@ -5,6 +5,12 @@
 	border: 1px solid black;
 }
 
+.checkerBoardContainer {
+	display: -ms-flexbox;
+	display: flex;
+	flex-wrap: nowrap;
+}
+
 .cell.active {
 	border: 3px solid blue;
 }
