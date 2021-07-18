@@ -10,17 +10,74 @@ namespace OutPost13.Data
 {
     public class WeatherForecastService
     {
+        // TODO: Finish implimenting the daily weather.
+        public DailyWeatherData DailyWeather { get; private set; }
+
         public List<WeatherForecast> GetForecast(string zip)
         {
             var WeatherListData = new List<WeatherForecast>();
 
             string latLong = GetLatLong(zip);
-
-            if (string.IsNullOrEmpty(latLong))
+            if (string.IsNullOrEmpty(latLong) || latLong.Equals(","))
             {
                 return null;
             }
 
+            var results = GetLatLongData(latLong);
+            var hourlyWeather = GetHourlyForecast(results);
+            DailyWeather = GetDailyForecast(results);
+
+            if (hourlyWeather.properties is null)
+            {
+                return WeatherListData;
+            }
+
+            foreach (var result in hourlyWeather.properties.periods)
+            {
+                WeatherListData.Add(new WeatherForecast()
+                {
+                    Date = result.startTime.ToString("MM/dd/yyyy H:mm:ss") + " to " + result.endTime.ToString("H:mm:ss"),
+                    Summary = result.shortForecast,
+                    TemperatureF = result.temperature,
+                    Icon = result.icon,
+                    City = results.properties?.relativeLocation?.properties?.city,
+                    State = results.properties?.relativeLocation?.properties?.state
+                });
+            }
+
+            return WeatherListData;
+        }
+
+        private DailyWeatherData GetDailyForecast(WeatherPointsResponse results)
+        {
+            var client = new RestClient(results?.properties?.forecast);
+            client.Timeout = -1;
+            var request = new RestRequest(Method.GET);
+            client.UserAgent = "(outpost13.net, sfernandez131@gmail.com)";
+            IRestResponse response = client.Execute(request);
+
+            if (response.IsSuccessful)
+                return JsonConvert.DeserializeObject<DailyWeatherData>(response.Content);           
+            else
+                return null;
+        }
+
+        private HourlyWeatherData GetHourlyForecast(WeatherPointsResponse results)
+        {
+            var client = new RestClient(results.properties.forecastHourly);
+            client.Timeout = -1;
+            var request = new RestRequest(Method.GET);
+            client.UserAgent = "(outpost13.net, sfernandez131@gmail.com)";
+            IRestResponse response = client.Execute(request);
+
+            if (response.IsSuccessful)
+                return JsonConvert.DeserializeObject<HourlyWeatherData>(response.Content);
+            else
+                return null;
+        }
+
+        private WeatherPointsResponse GetLatLongData(string latLong)
+        {
             var client = new RestClient($"https://api.weather.gov/points/{latLong}");
             client.Timeout = -1;
             var request = new RestRequest(Method.GET);
@@ -28,32 +85,10 @@ namespace OutPost13.Data
             request.AddHeader("Accept", "application/cap+xml");
             IRestResponse response = client.Execute(request);
 
-            var results = JsonConvert.DeserializeObject<WeatherPointsResponse>(response.Content);
-
-            var client2 = new RestClient(results.properties.forecastHourly);
-            client2.Timeout = -1;
-            var request2 = new RestRequest(Method.GET);
-            client2.UserAgent = "(outpost13.net, sfernandez131@gmail.com)";
-            IRestResponse response2 = client2.Execute(request2);
-
-            var results2 = JsonConvert.DeserializeObject<HourlyWeatherData>(response2.Content);
-
-            if (results2.properties is null)
-            {
-                return WeatherListData;
-            }
-            foreach(var result in results2.properties.periods)
-            {
-                WeatherListData.Add(new WeatherForecast()
-                {
-                    Date = result.startTime.ToString("MM/dd/yyyy H:mm:ss") + " to " + result.endTime.ToString("H:mm:ss"),
-                    Summary = result.shortForecast,
-                    TemperatureF = result.temperature,
-                    Icon = result.icon
-                });
-            }
-
-            return WeatherListData;
+            if (response.IsSuccessful)
+                return JsonConvert.DeserializeObject<WeatherPointsResponse>(response.Content);
+            else
+                return null;
         }
 
         private string GetLatLong(string zip)
@@ -90,7 +125,6 @@ namespace OutPost13.Data
         public string type { get; set; }
         public Geometry geometry { get; set; }
         public Properties properties { get; set; }
-
 
         public class Geometry
         {
@@ -152,8 +186,6 @@ namespace OutPost13.Data
             public string unitCode { get; set; }
         }
     }
-
-
     public class HourlyWeatherData
     {
         public object[] context { get; set; }
@@ -203,5 +235,53 @@ namespace OutPost13.Data
             public string detailedForecast { get; set; }
         }
     }
+    public class DailyWeatherData
+    {
+        public object[] context { get; set; }
+        public string type { get; set; }
+        public Geometry geometry { get; set; }
+        public Properties properties { get; set; }
 
+        public class Geometry
+        {
+            public string type { get; set; }
+            public float[][][] coordinates { get; set; }
+        }
+
+        public class Properties
+        {
+            public DateTime updated { get; set; }
+            public string units { get; set; }
+            public string forecastGenerator { get; set; }
+            public DateTime generatedAt { get; set; }
+            public DateTime updateTime { get; set; }
+            public string validTimes { get; set; }
+            public Elevation elevation { get; set; }
+            public Period[] periods { get; set; }
+        }
+
+        public class Elevation
+        {
+            public float value { get; set; }
+            public string unitCode { get; set; }
+        }
+
+        public class Period
+        {
+            public int number { get; set; }
+            public string name { get; set; }
+            public DateTime startTime { get; set; }
+            public DateTime endTime { get; set; }
+            public bool isDaytime { get; set; }
+            public int temperature { get; set; }
+            public string temperatureUnit { get; set; }
+            public object temperatureTrend { get; set; }
+            public string windSpeed { get; set; }
+            public string windDirection { get; set; }
+            public string icon { get; set; }
+            public string shortForecast { get; set; }
+            public string detailedForecast { get; set; }
+        }
+
+    }
 }
