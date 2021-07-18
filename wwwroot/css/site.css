@@ -1,6 +1,10 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 @import url('https://fonts.googleapis.com/css2?family=Fira+Sans&display=swap');
 
+.topNavBar {
+    width: 100%;
+}
+
 .Logo {
     left: -40px;
     padding: 20px;

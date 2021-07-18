@@ -1,41 +1,43 @@
 ﻿@using BlazorAnimate
 
-<div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="">OutPost13<em>dotnet</em></a>
-    <button class="navbar-toggler" @onclick="ToggleNavMenu">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-</div>
+<div class="topNavBar">
+        <div class="top-row pl-4 navbar navbar-dark">
+            <a class="navbar-brand" href="">OutPost13<em>dotnet</em></a>
+            <button class="navbar-toggler" @onclick="ToggleNavMenu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
 
-<!--<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <ul class="nav flex-column">
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="oi Logo2" aria-hidden="true"></span> Weather
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="nasaapis">
-                <span class="oi Logo" aria-hidden="true"></span> NASA APIs
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="checkers">
-                <span class="oi Logo3 rounded-circle" aria-hidden="true"></span> Checkers
-            </NavLink>
-        </li>
-    </ul>
-</div>-->
+    <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+        <ul class="nav flex-column">
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                    <span class="oi oi-home" aria-hidden="true"></span> Home
+                </NavLink>
+            </li>
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="counter">
+                    <span class="oi oi-plus" aria-hidden="true"></span> Counter
+                </NavLink>
+            </li>
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="weather">
+                    <span class="oi Logo2" aria-hidden="true"></span> Weather
+                </NavLink>
+            </li>
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="nasaapis">
+                    <span class="oi Logo" aria-hidden="true"></span> NASA APIs
+                </NavLink>
+            </li>
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="checkers">
+                    <span class="oi Logo3 rounded-circle" aria-hidden="true"></span> Checkers
+                </NavLink>
+            </li>
+        </ul>
+    </div>
+</div>
 
 @code {
     private bool collapseNavMenu = true;
