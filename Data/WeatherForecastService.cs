@@ -10,10 +10,7 @@ namespace OutPost13.Data
 {
     public class WeatherForecastService
     {
-        // TODO: Finish implimenting the daily weather.
-        public DailyWeatherData DailyWeather { get; private set; }
-
-        public List<WeatherForecast> GetForecast(string zip)
+        public List<WeatherForecast> GetHourlyForecast(string zip)
         {
             var WeatherListData = new List<WeatherForecast>();
 
@@ -25,7 +22,6 @@ namespace OutPost13.Data
 
             var results = GetLatLongData(latLong);
             var hourlyWeather = GetHourlyForecast(results);
-            DailyWeather = GetDailyForecast(results);
 
             if (hourlyWeather.properties is null)
             {
@@ -36,7 +32,7 @@ namespace OutPost13.Data
             {
                 WeatherListData.Add(new WeatherForecast()
                 {
-                    Date = result.startTime.ToString("MM/dd/yyyy H:mm:ss") + " to " + result.endTime.ToString("H:mm:ss"),
+                    Date = result.startTime.ToString("MM/dd/yyyy H:mm") + " to " + result.endTime.ToString("H:mm"),
                     Summary = result.shortForecast,
                     TemperatureF = result.temperature,
                     Icon = result.icon,
@@ -48,6 +44,44 @@ namespace OutPost13.Data
             return WeatherListData;
         }
 
+        public List<DailyWeatherForecast> GetDailyForecast(string zip)
+        {
+            var WeatherListDataDaily = new List<DailyWeatherForecast>();
+
+            string latLong = GetLatLong(zip);
+            if (string.IsNullOrEmpty(latLong) || latLong.Equals(","))
+            {
+                return null;
+            }
+
+            var results = GetLatLongData(latLong);
+            var dFore = GetDailyForecast(results);
+
+            if (dFore.properties is null)
+                return WeatherListDataDaily;
+
+            foreach (var result in dFore.properties?.periods)
+            {
+                WeatherListDataDaily.Add(new DailyWeatherForecast()
+                {
+                    City = results.properties.relativeLocation.properties.city,
+                    State = results.properties.relativeLocation.properties.state,
+                    ShortForecast = result.shortForecast,
+                    StartTime = result.startTime,
+                    EndTime = result.endTime,
+                    Icon = result.icon,
+                    IsDayTime = result.isDaytime,
+                    Summary = result.detailedForecast,
+                    WindSpeed = result.windSpeed,
+                    Name = result.name,
+                    WindDirection = result.windDirection,
+                    TemperatureF = result.temperature
+                });
+            }
+
+            return WeatherListDataDaily;
+        }
+
         private DailyWeatherData GetDailyForecast(WeatherPointsResponse results)
         {
             var client = new RestClient(results?.properties?.forecast);
@@ -57,7 +91,7 @@ namespace OutPost13.Data
             IRestResponse response = client.Execute(request);
 
             if (response.IsSuccessful)
-                return JsonConvert.DeserializeObject<DailyWeatherData>(response.Content);           
+                return JsonConvert.DeserializeObject<DailyWeatherData>(response.Content);
             else
                 return null;
         }

@@ -7,101 +7,110 @@
 
 @inject WeatherForecastService ForecastService
 
-<h1>Weather forecast</h1>
+<h1>Weather Forecast</h1>
 
 <p>This component demonstrates fetching data from a service.</p>
 <p>Enter your ZIP code to fetch weather data: </p>
 
-<input type="text" @bind-value="@ZIP" @bind-value:event="oninput" @onkeypress="@Enter" />
-<button @onclick="@GetWeatherForcast">Go</button>
+<div style="display: table; border-spacing: 10px;">
+    <input style="border-radius: 25px; margin-right: 5px;" type="text" @bind-value="@ZIP" @bind-value:event="oninput" @onkeypress="@Enter" />
+    <button id="goBtn" @onclick="@(() => {GetWeatherForcast();})">Go</button>
 
-@if (Hourly)
-{
-    <div class="w3-bar w3-black">
-        <button id="swp" class="w3-bar-item w3-button" @onclick="@(() => { GetTab(); })">Switch to Daily</button>
-    </div>
-    if (forecasts == null && isProcessing)
+    @if (Hourly)
     {
-        <p><em>ZIP could not be found...</em></p>
-    }
-    else if (forecasts == null && !isProcessing)
-    {
-        <p><em>Please Enter Your ZIP</em></p>
-    }
-    else
-    {
-        <Animate Animation="Animations.SlideLeft" Once="false" Duration="TimeSpan.FromSeconds(.5)" @ref="@anim" IsManual="false">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Temp. (C)</th>
-                        <th>Temp. (F)</th>
-                        <th>Summary</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var forecast in forecasts)
-                    {
-                        <tr style="@GetBGColor(bgColorTR[s])" @onload="@(() => { bgColorTR[s] = bgColorTR[s] == true ? false : true; })">
-                            <td >@forecast.Date</td>
-                            <td>@forecast.TemperatureC</td>
-                            <td>@forecast.TemperatureF</td>
-                            <td><img src="@forecast.Icon" class="rounded-lg" style="max-height:80px; margin-right:5px">@forecast.Summary</td>
+        <div id="swpCnter" class="w3-bar w3-black">
+            <button id="swp" class="w3-bar-item w3-button" @onclick="@(() => { GetTab(); })">Switch to Daily</button>
+        </div>
+        if (forecasts == null && isProcessing)
+        {
+            <p id="weatherPrompt"><em>ZIP could not be found...</em></p>
+        }
+        else if (forecasts == null && !isProcessing)
+        {
+            <p id="weatherPrompt"><em>Please Enter Your ZIP</em></p>
+        }
+        else
+        {
+            <Animate Animation="Animations.SlideLeft" Once="false" Duration="TimeSpan.FromSeconds(.5)" @ref="@anim" IsManual="false">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Temp. (C)</th>
+                            <th>Temp. (F)</th>
+                            <th>Summary</th>
                         </tr>
-                        s = s == 0 ? 1 : 0;
-                    }
-                </tbody>
-            </table>
-        </Animate>
+                    </thead>
+                    <tbody>
+                        @foreach (var forecast in forecasts)
+                        {
+                            <tr style="@GetBGColor(bgColorTR[s])" @onload="@(() => { bgColorTR[s] = bgColorTR[s] == true ? false : true; })">
+                                <td>@forecast.Date</td>
+                                <td>@forecast.TemperatureC</td>
+                                <td>@forecast.TemperatureF</td>
+                                <td><img src="@forecast.Icon" class="rounded-lg" style="max-height:80px; margin-right:5px">@forecast.Summary</td>
+                            </tr>
+                            s = s == 0 ? 1 : 0;
+                        }
+                    </tbody>
+                </table>
+            </Animate>
+        }
     }
-}
-@if (Daily)
-{
-    <div class="w3-bar w3-black">
-        <button id="swp" class="w3-bar-item w3-button" @onclick="@(() => { GetTab(); })">Switch to Hourly</button>
-    </div>
+    @if (Daily)
+    {
+        <div class="w3-bar w3-black">
+            <button id="swp" class="w3-bar-item w3-button" @onclick="@(() => { GetTab(); })">Switch to Hourly</button>
+        </div>
 
-    if (forecasts.Where(d => d.DailyWeather != null).Count() == 0 && isProcessing)
-    {
-        <p><em>ZIP could not be found...</em></p>
-    }
-    else if (forecasts.Where(d => d.DailyWeather != null).Count() == 0 && !isProcessing)
-    {
-        <p><em>Please Enter Your ZIP</em></p>
-    }
-    else
-    {
-        <Animate Animation="Animations.SlideRight" Once="false" Duration="TimeSpan.FromSeconds(.5)" @ref="@anim" IsManual="false">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Name</th>>
-                        <th>Date</th>
-                        <th>Temp. (C)</th>
-                        <th>Temp. (F)</th>
-                        <th>Summary</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var forecast in forecasts)
-                    {
-                        <tr style="@GetBGColor(bgColorTR[s])" @onload="@(() => { bgColorTR[s] = bgColorTR[s] == true ? false : true; })">
-                            <td></td>
-                            <td >@forecast.Date</td>
-                            <td>@forecast.TemperatureC</td>
-                            <td>@forecast.TemperatureF</td>
-                            <td><img src="@forecast.Icon" class="rounded-lg" style="max-height:80px; margin-right:5px">@forecast.Summary</td>
+        if (dForecasts is null && !isProcessing)
+        {
+            <p id="weatherPrompt"><em>Please Enter Your ZIP</em></p>
+        }
+        else if (dForecasts.Count() == 0 && isProcessing)
+        {
+            <p id="weatherPrompt"><em>ZIP could not be found...</em></p>
+        }
+        else if (dForecasts.Count() == 0 && !isProcessing)
+        {
+            <p id="weatherPrompt"><em>Please Enter Your ZIP</em></p>
+        }
+        else
+        {
+            <Animate Animation="Animations.SlideUp" Once="false" Duration="TimeSpan.FromSeconds(.5)" @ref="@anim" IsManual="false">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Day Parts</th>
+                            <th>Wind Speed</th>
+                            <th>Temp. (C)</th>
+                            <th>Temp. (F)</th>
+                            <th></th>
+                            <th>Summary</th>
                         </tr>
-                        s = s == 0 ? 1 : 0;
-                    }
-                </tbody>
-            </table>
-        </Animate>
+                    </thead>
+                    <tbody>
+                        @foreach (var forecast in dForecasts)
+                        {
+                            <tr style="@GetBGColor(bgColorTR[s])" @onload="@(() => { bgColorTR[s] = bgColorTR[s] == true ? false : true; })">
+                                <td >@forecast.Name</td>
+                                <td >@forecast.WindSpeed @forecast.WindDirection</td>
+                                <td>@forecast.TemperatureC</td>
+                                <td>@forecast.TemperatureF</td>
+                                <td><img src="@forecast.Icon" class="rounded-lg" style="max-height:80px; margin-right:5px"></td>
+                                <td>@forecast.Summary</td>
+                            </tr>
+                            s = s == 0 ? 1 : 0;
+                        }
+                    </tbody>
+                </table>
+            </Animate>
+        }
     }
-}
+</div>
 
 @code {
+    // Get Hourly || Daily weather.
     bool Hourly = true;
     bool Daily = false;
 
@@ -119,21 +128,25 @@
             Daily = true;
         }
     }
+    //
 
-    int s = 0;
-    Dictionary<int, bool> bgColorTR = new Dictionary<int, bool>
-    {
-        { 0, true },
-        { 1, false }
-    };
-
+    // Animation code.
     private Animate anim;
 
     private void RunAnimation()
     {
         anim.Run();
     }
+    //
 
+    // Color swapper for weather lines.
+    // Style should be set as such: style="@GetBGColor(bgColorTR[s])" @onload="@(() => { bgColorTR[s] = bgColorTR[s] == true ? false : true; })"
+    int s = 0;
+    Dictionary<int, bool> bgColorTR = new Dictionary<int, bool>
+    {
+        { 0, true },
+        { 1, false }
+    };
     string GetBGColor(bool isSelected)
     {
         if (isSelected)
@@ -143,10 +156,12 @@
         else
             return "background-color:white";
     }
+    //
 
+    // Process weather data.
     private string ZIP;
     private List<WeatherForecast> forecasts;
-
+    private List<DailyWeatherForecast> dForecasts;
     bool isProcessing = false;
 
     public void GetWeatherForcast()
@@ -155,7 +170,8 @@
         {
             return;
         }
-        forecasts = ForecastService.GetForecast(ZIP);
+        forecasts = ForecastService.GetHourlyForecast(ZIP);
+        dForecasts = ForecastService.GetDailyForecast(ZIP);
         StateHasChanged();
     }
 
@@ -168,4 +184,5 @@
             GetWeatherForcast();
         }
     }
+    //
 }

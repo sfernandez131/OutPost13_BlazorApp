@@ -1,6 +1,22 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 @import url('https://fonts.googleapis.com/css2?family=Fira+Sans&display=swap');
 
+#swpCnter {
+    display: table-cell;
+}
+
+#swp {
+    border-radius: 25px;
+}
+
+#goBtn {
+    border-radius: 25px;
+}
+
+#weatherPrompt {
+    display: table-row;
+}
+
 .Logo {
     left: -40px;
     padding: 20px;
