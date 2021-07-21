@@ -13,8 +13,8 @@
 <p>This component demonstrates fetching data from a service and processing to a frontend.</p>
 <p>Enter your ZIP code to fetch weather data: </p>
 
-<div style="display: table; border-spacing: 10px;">
-    <input style="border-radius: 25px; margin-right: 5px;" type="text" @bind-value="@ZIP" @bind-value:event="oninput" @onkeypress="@Enter" />
+<div style="display: table; border-spacing: 2px;">
+    <input style="border-radius: 25px; margin-right: 5px; outline: none; text-indent: 5px;" type="text" @bind-value="@ZIP" @bind-value:event="oninput" @onkeypress="@Enter" />
     <button id="goBtn" @onclick="@(() => {GetWeatherForcast();})">Go</button>
 
     @if (Hourly)
@@ -33,7 +33,7 @@
         else
         {
             <Animate Animation="Animations.SlideLeft" Once="false" Duration="TimeSpan.FromSeconds(.5)" @ref="@anim" IsManual="false">
-                <table class="table" style="width: 100%">
+                <table class="table-responsive" style="width: 100%;">
                     <thead>
                         <tr>
                             <th>Date</th>
@@ -79,7 +79,7 @@
         else
         {
             <Animate Animation="Animations.SlideUp" Once="false" Duration="TimeSpan.FromSeconds(.5)" @ref="@anim" IsManual="false">
-                <table class="table">
+                <table class="table-responsive" style="margin-left: -17px; overflow: visible;">
                     <thead>
                         <tr>
                             <th>Day Parts</th>
@@ -87,7 +87,6 @@
                             <th>Temp. (C)</th>
                             <th>Temp. (F)</th>
                             <th></th>
-                            <th>Summary</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -99,7 +98,9 @@
                                 <td>@forecast.TemperatureC</td>
                                 <td>@forecast.TemperatureF</td>
                                 <td><img src="@forecast.Icon" class="rounded-lg" style="max-height:80px; margin-right:5px"></td>
-                                <td>@forecast.Summary</td>
+                            </tr>
+                            <tr style="@GetBGColor(bgColorTR[s])" @onload="@(() => { bgColorTR[s] = bgColorTR[s] == true ? false : true; })">
+                                <td colspan="5" style="font-weight:700">Summary: @forecast.Summary</td>
                             </tr>
                             s = s == 0 ? 1 : 0;
                         }
