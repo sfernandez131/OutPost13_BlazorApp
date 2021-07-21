@@ -68,11 +68,11 @@
         {
             <p id="weatherPrompt"><em>Please Enter Your ZIP</em></p>
         }
-        else if (dForecasts.Count() == 0 && isProcessing)
+        else if (dForecasts == null && isProcessing)
         {
             <p id="weatherPrompt"><em>ZIP could not be found...</em></p>
         }
-        else if (dForecasts.Count() == 0 && !isProcessing)
+        else if (dForecasts == null && !isProcessing)
         {
             <p id="weatherPrompt"><em>Please Enter Your ZIP</em></p>
         }

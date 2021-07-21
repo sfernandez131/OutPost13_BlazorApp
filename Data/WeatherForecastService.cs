@@ -23,7 +23,7 @@ namespace OutPost13.Data
             var results = GetLatLongData(latLong);
             var hourlyWeather = GetHourlyForecast(results);
 
-            if (hourlyWeather.properties is null)
+            if (hourlyWeather?.properties is null)
             {
                 return WeatherListData;
             }
@@ -57,7 +57,7 @@ namespace OutPost13.Data
             var results = GetLatLongData(latLong);
             var dFore = GetDailyForecast(results);
 
-            if (dFore.properties is null)
+            if (dFore?.properties is null)
                 return WeatherListDataDaily;
 
             foreach (var result in dFore.properties?.periods)

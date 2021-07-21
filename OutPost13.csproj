@@ -5,7 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\imgs\icon-192.png" />
+    <None Include="wwwroot\imgs\icon-512.png" />
     <None Include="wwwroot\imgs\me.jpg" />
+    <None Include="wwwroot\service-worker.js" />
+    <None Include="wwwroot\service-worker.published.js" />
     <None Include="wwwroot\zip_LATLONG_db.csv" />
   </ItemGroup>
 

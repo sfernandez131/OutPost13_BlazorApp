@@ -11,11 +11,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>OutPost13</title>
-    <base href="~/" />
+    <base href="/" />
+    <link href="manifest.json" rel="manifest" />
     <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
     <link href="_content/Blazorise.Bootstrap/blazorise.bootstrap.css" rel="stylesheet" />
     <link href="css/site.css" rel="stylesheet" />
     <link href="css/checkers.css" rel="stylesheet" />
+    <link href="manifest.json" rel="manifest" />
+    <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png" />
+    <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png" />
 </head>
 <body>
     <app>
@@ -35,5 +39,6 @@
 
     <script src="_framework/blazor.server.js"></script>
     <script src="_content/BlazorAnimate/blazorAnimateInterop.js"></script>
+    <script>navigator.serviceWorker.register('service-worker.js');</script>
 </body>
 </html>
