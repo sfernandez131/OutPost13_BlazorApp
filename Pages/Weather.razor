@@ -7,6 +7,13 @@
 
 @inject WeatherForecastService ForecastService
 
+<style>
+    td {
+        vertical-align: middle !important;
+        text-align: center !important;
+    }
+</style>
+
 <h1>Weather Forecast</h1>
 <h6>Weather data provided by the <a style="text-decoration: none;" href="https://www.ncdc.noaa.gov/cdo-web/webservices/v2" target="_blank">NOAA API</a>.</h6>
 
@@ -33,12 +40,13 @@
         else
         {
             <Animate Animation="Animations.SlideLeft" Once="false" Duration="TimeSpan.FromSeconds(.5)" @ref="@anim" IsManual="false">
-                <table class="table-responsive" style="width: 100%;">
+                <table class="table">
                     <thead>
                         <tr>
                             <th>Date</th>
                             <th>Temp. (C)</th>
                             <th>Temp. (F)</th>
+                            <th></th>
                             <th>Summary</th>
                         </tr>
                     </thead>
@@ -49,7 +57,8 @@
                                 <td>@forecast.Date</td>
                                 <td>@forecast.TemperatureC</td>
                                 <td>@forecast.TemperatureF</td>
-                                <td><img src="@forecast.Icon" class="rounded-lg" style="max-height:80px; margin-right:5px">@forecast.Summary</td>
+                                <td><img src="@forecast.Icon" class="rounded-lg" style="max-height:80px; margin-right:5px"></td>
+                                <td style="text-align:left !important;">@forecast.Summary</td>
                             </tr>
                             s = s == 0 ? 1 : 0;
                         }

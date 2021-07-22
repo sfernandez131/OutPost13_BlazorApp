@@ -5,6 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\Build\**" />
+    <Content Remove="wwwroot\Build\**" />
+    <EmbeddedResource Remove="wwwroot\Build\**" />
+    <None Remove="wwwroot\Build\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="wwwroot\imgs\icon-192.png" />
     <None Include="wwwroot\imgs\icon-512.png" />
     <None Include="wwwroot\imgs\me.jpg" />
@@ -14,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="BingMapsRESTToolkit" Version="1.1.4" />
     <PackageReference Include="BlazorAnimate" Version="3.0.0" />
     <PackageReference Include="Blazorise.Bootstrap" Version="0.9.4" />
     <PackageReference Include="Blazorise.Icons.FontAwesome" Version="0.9.4" />
@@ -21,6 +29,7 @@
     <PackageReference Include="Microsoft.Azure.SignalR" Version="1.9.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="RestSharp" Version="106.12.0" />
+    <PackageReference Include="Unity" Version="5.11.10" />
   </ItemGroup>
 
   <ItemGroup>
