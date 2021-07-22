@@ -27,7 +27,10 @@
     @if (Hourly)
     {
         <div class="w3-bar w3-black">
-            <button id="swp" class="w3-bar-item w3-button" @onclick="@(() => { GetTab(); })">Switch to Daily</button>
+            <button id="swp" class="w3-bar-item w3-button" @onclick="@(() => { GetTab(); })">Switch to Daily</button>        
+        <NavLink class="disabled" href="radar">
+            <button id="swp" class="w3-bar-item w3-button">Radar</button>
+        </NavLink>
         </div>
         if (forecasts == null && isProcessing)
         {
