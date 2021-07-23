@@ -1,0 +1,15 @@
+﻿@page "/radarCS"
+
+@using OsmSharp;
+@using OsmSharp.IO.API
+
+<h3>WeatherRadarSharp</h3>
+
+@code {
+
+    // Create a client factory
+    static ClientsFactory clientFactory = new ClientsFactory(null, new HttpClient(), "https://master.apis.dev.openstreetmap.org/api/");
+    static INonAuthClient client = clientFactory.CreateNonAuthClient();
+    Task<Node> node = client.GetNode(100);
+
+}

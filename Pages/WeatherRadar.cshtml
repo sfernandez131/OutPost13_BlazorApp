@@ -13,8 +13,9 @@
 <h5>This project is NOT done yet. It's an expression of JavaScript skills.</h5>
 <button id="swp" class="w3-bar-item w3-button" onclick="location.href = 'https://outpost13.azurewebsites.net/weather'">Back</button>
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
 <style type="text/css">
     li {
         list-style: none;
@@ -47,6 +48,20 @@
 <div id="mapid" style="position: absolute; top: 250px; left: 0; bottom: 0; right: 0;"></div>
 
 <script>
+    (function(window, location) {
+        history.replaceState(null, document.title, location.pathname+"#!/weather");
+        history.pushState(null, document.title, location.pathname);
+
+        window.addEventListener("popstate", function() {
+          if(location.hash === "#!/weather") {
+                history.replaceState(null, document.title, location.pathname);
+                setTimeout(function(){
+                  location.replace("https://outpost13.azurewebsites.net/weather");
+                },0);
+          }
+        }, false);
+    }(window, location));
+
     var map = L.map('mapid').setView([42.1503, -84.0377], 8);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
