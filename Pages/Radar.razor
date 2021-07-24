@@ -1,0 +1,54 @@
+﻿@page "/radarr"
+
+@using System.IO;
+@using OutPost13.Data;
+
+<h3>Weather Radar (JS)</h3>
+<h5>This project is NOT done yet. It's an expression of JavaScript skills.</h5>
+
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+</head>
+    <body>
+        <style type="text/css">
+            li {
+                list-style: none;
+                display: inline-block;
+            }
+        </style>
+
+        <ul style="text-align:center; height: 50px;">
+            <li><input type="radio" name="kind" checked="checked" onchange="setKind('radar')">Radar (Past + Future) <input type="radio" name="kind" onchange="setKind('satellite')">Infrared Satellite</li>
+
+            <li><input type="button" onclick="stop(); showFrame(animationPosition - 1); return;" value="&lt;" /></li>
+            <li><input type="button" onclick="playStop();" value="Play / Stop" /></li>
+            <li><input type="button" onclick="stop(); showFrame(animationPosition + 1); return;" value="&gt;" /></li>
+
+            <li><select id="colors" onchange="setColors(); return;">
+                <option value="0">Black and White Values</option>
+                <option value="1">Original</option>
+                <option value="2">Universal Blue</option>
+                <option value="3">TITAN</option>
+                <option value="4" selected="selected">The Weather Channel</option>
+                <option value="5">Meteored</option>
+                <option value="6">NEXRAD Level-III</option>
+                <option value="7">RAINBOW at SELEX-SI</option>
+                <option value="8">Dark Sky</option>
+            </select></li>
+        </ul>
+
+        <div id="timestamp" style="text-align:center; height: 80px;">FRAME TIME</div>
+
+        <div class="container">
+            <div id="mapid" style="height: 600px; min-width:fit-content; overflow:auto; margin-bottom: 50px;"></div>
+        </div>
+    </body>
+</html>
+
+@code {
+
+}

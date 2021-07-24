@@ -1,5 +1,6 @@
 ﻿@using System.Threading;
 @using System.IO;
+@using System.Text
 
 <style>
      /* unvisited link */
@@ -20,7 +21,11 @@
     /* selected link */
     a:active {
       color: black;
-    } 
+    }
+
+    a:hover{
+        cursor: default;
+    }
 
     @@media screen and (min-width: 1000px) {
         #aboutMeText {
@@ -48,13 +53,8 @@
         Assistant Business Application Developer. I'm dedicated to learning
         new skills to build and enhance the effectiveness and efficiency of our custom
         applications and collaboration of our team. Skilled in Microsoft Office, Visual
-        Studio, Unity, Blazor Applications/Razor Components, X<a style="text-decoration: none;" href="MLand/mland.html" target="_blank">ML</a>, JSON, MVC applications, 
+        Studio, Unity, Blazor Applications/Razor Components, X<a style="text-decoration: none;" href="mLand/index.html" target="_blank">ML</a>, JSON, MVC applications, 
         Android App development, .NET Framework/.NET Core/.NET5, Rest, API integration, 
         MS SQL Server, C#, and other Object Oriented Programming languages.
     </p>
 </div>
-
-@code {
-
-
-}

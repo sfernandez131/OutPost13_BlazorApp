@@ -12,6 +12,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Pages\Radar.html" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="wwwroot\imgs\icon-192.png" />
     <None Include="wwwroot\imgs\icon-512.png" />
     <None Include="wwwroot\imgs\me.jpg" />

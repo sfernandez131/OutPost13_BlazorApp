@@ -1,0 +1,26 @@
+﻿@page "/mland"
+
+@using System.IO;
+
+@*<p>@myMarkup</p>*@
+
+@((MarkupString)myMarkup)
+
+@code {
+    protected override void OnInitialized()
+    {
+        GetMarkUp();
+    }
+
+    string myMarkup = "";
+    void GetMarkUp()
+    {
+        string[] txtArr = File.ReadAllLines(Environment.CurrentDirectory + @"/wwwroot/mLand/index.html");
+
+        foreach (string txt in txtArr)
+        {
+            myMarkup += txt;
+        }
+        StateHasChanged();
+    }
+}

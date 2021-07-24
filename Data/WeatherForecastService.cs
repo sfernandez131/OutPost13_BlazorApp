@@ -10,6 +10,7 @@ namespace OutPost13.Data
 {
     public class WeatherForecastService
     {
+        public HashSet<int> hashMap = new HashSet<int>();
         public List<WeatherForecast> GetHourlyForecast(string zip)
         {
             var WeatherListData = new List<WeatherForecast>();
