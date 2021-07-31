@@ -1,5 +1,5 @@
-var Map = function () {
-
+var Map = function(theMap)
+{
     (function (window, location) {
         history.replaceState(null, document.title, location.pathname + "#!/weather");
         history.pushState(null, document.title, location.pathname);
@@ -12,11 +12,9 @@ var Map = function () {
                 }, 0);
             }
         }, false);
-    } (window, location));
+    }(window, location));
 
-
-
-    var map = L.map(mapid).setView([42.1503, -84.0377], 8);
+    var map = L.map(theMap).setView([42.1503, -84.0377], 8);
 
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -221,4 +219,8 @@ var Map = function () {
         e.preventDefault();
         return false;
     }
+}
+
+var PS = function () {
+    Map.playStop();
 }
