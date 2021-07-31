@@ -3,14 +3,17 @@
 @using System.IO;
 @using OutPost13.Data;
 
-<h3>Weather Radar (JS)</h3>
-<h5>This project is NOT done yet. It's an expression of JavaScript skills.</h5>
+@inject IJSRuntime JS
+
+<h3>Weather Radar</h3>
+<h6>This project is a work in progress and is not yet functional.</h6>
+<h6>This page serves to demonstrate the use of JS in the Blazor C# page.</h6>>
 
 <!DOCTYPE html>
 <html lang="en-us">
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="Content-Type" content="*/*"; charset="utf-8">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 </head>
     <body>
@@ -25,7 +28,7 @@
             <li><input type="radio" name="kind" checked="checked" onchange="setKind('radar')">Radar (Past + Future) <input type="radio" name="kind" onchange="setKind('satellite')">Infrared Satellite</li>
 
             <li><input type="button" onclick="stop(); showFrame(animationPosition - 1); return;" value="&lt;" /></li>
-            <li><input type="button" onclick="playStop();" value="Play / Stop" /></li>
+            <li><input type="button" @onclick="@(() => {PlayStop();})" value="Play / Stop" /></li>
             <li><input type="button" onclick="stop(); showFrame(animationPosition + 1); return;" value="&gt;" /></li>
 
             <li><select id="colors" onchange="setColors(); return;">
@@ -42,13 +45,27 @@
         </ul>
 
         <div id="timestamp" style="text-align:center; height: 80px;">FRAME TIME</div>
-
-        <div class="container">
-            <div id="mapid" style="height: 600px; min-width:fit-content; overflow:auto; margin-bottom: 50px;"></div>
-        </div>
+        <div id="mapid" style="height: 600px; min-width:fit-content; overflow:hidden; margin-bottom: 50px; "></div>
     </body>
 </html>
 
 @code {
+    private IJSObjectReference mapRef;
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        //await JS.InvokeVoidAsync("Map");
+        mapRef = await JS.InvokeAsync<IJSObjectReference>("Map");
+
+    }
+
+    object PlayStop()
+    {
+        return mapRef.InvokeVoidAsync("playstop");
+    }
 }

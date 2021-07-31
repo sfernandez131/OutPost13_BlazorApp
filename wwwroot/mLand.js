@@ -1,4 +1,4 @@
-    var buildUrl = "wwwroot/Build";
+    var buildUrl = "Build";
     var loaderUrl = buildUrl + "/Build.loader.js";
           var config = {
         dataUrl: buildUrl + "/Build.data",
