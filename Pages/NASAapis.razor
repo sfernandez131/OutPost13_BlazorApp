@@ -1,8 +1,96 @@
 ﻿@page "/nasaapis"
 
+@using Newtonsoft.Json
+@using OutPost13.Components
 @using OutPost13.Data
+@using RestSharp
+
+@inject IModalService modal 
 
 <h1>NASA APIs</h1>
 
-<p>This component demonstrates fetching data from the NASA API TrasferData. Unfortunately... it isn't ready yet! :)</p>
+<p>This component demonstrates fetching data from the NASA API's.</p>
 
+<h2>APOD API</h2>
+
+@foreach (APOD.Pod pics in Pods)
+{
+	<div id="content">
+		<h3>@pics.title</h3>
+		<img style="max-width:80vw; display: block; margin-left: auto; margin-right: auto;" src="@pics.url" @onclick="@(() => modal.Show(new APOD_IMG(pics.url).GetType(), @pics.title))"/>
+		<p>@pics.explanation</p>
+	</div>
+}
+
+@code {
+
+	protected override Task OnInitializedAsync()
+	{
+		GetStartAndEndOfWeek();
+		GetWeekOfPictures();
+
+		return Task.CompletedTask;
+	}
+
+	private List<APOD.Pod> Pods = new();
+	void GetWeekOfPictures()
+	{
+		var client = new RestClient($"https://api.nasa.gov/planetary/apod?api_key=FlMQpwnmPCZ1HNEAQXnPXeMyWdUZMhR253zEPLvl&thumbs=true&start_date={ReturnVal.Split(',').FirstOrDefault()}&end_date={ReturnVal.Split(',').LastOrDefault()}");
+		client.Timeout = -1;
+		var request = new RestRequest(Method.GET);
+		IRestResponse response = client.Execute(request);
+
+		if (response.IsSuccessful)
+		{
+			Pods = JsonConvert.DeserializeObject<List<APOD.Pod>>(response.Content);
+		}
+	}
+
+	private string ReturnVal = "";
+	void GetStartAndEndOfWeek()
+	{
+		DateTime today = DateTime.Now;
+		DateTime start = new DateTime();
+		DateTime end = new DateTime();
+
+		// Sunday will start the week.
+		switch (today.DayOfWeek)
+		{
+			case DayOfWeek.Sunday:
+				start = today;
+				end = start.AddDays(6);
+				break;
+
+			case DayOfWeek.Monday:
+				start = today.AddDays(-1);
+				end = start.AddDays(6);
+				break;
+
+			case DayOfWeek.Tuesday:
+				start = today.AddDays(-2);
+				end = start.AddDays(6);
+				break;
+
+			case DayOfWeek.Wednesday:
+				start = today.AddDays(-3);
+				end = start.AddDays(6);
+				break;
+
+			case DayOfWeek.Thursday:
+				start = today.AddDays(-4);
+				end = start.AddDays(6);
+				break;
+
+			case DayOfWeek.Friday:
+				start = today.AddDays(-5);
+				end = start.AddDays(6);
+				break;
+
+			case DayOfWeek.Saturday:
+				start = today.AddDays(-6);
+				end = start.AddDays(6);
+				break;
+		}
+		ReturnVal = $"{start.ToString("yyyy-MM-dd")},{end.ToString("yyyy-MM-dd")}";
+	}
+}
