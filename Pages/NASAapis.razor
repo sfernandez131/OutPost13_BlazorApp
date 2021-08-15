@@ -15,7 +15,7 @@
 <h3>NASAs Picture of the Day API. Photos for the whole week!</h3>
 
 @foreach (APOD.Pod pics in Pods)
-{
+{	
 		<h3>@pics.title - @pics.date</h3>
 		<img style="max-width:80vw; display: block; margin-left: auto; margin-right: auto;" src="@pics.url" @onclick="@(() => modal.Show(new APOD_IMG(pics.url).GetType(), @pics.title))"/>
 		<p>@pics.explanation</p>
@@ -48,48 +48,9 @@
 	private string ReturnVal = "";
 	void GetStartAndEndOfWeek()
 	{
-		DateTime today = DateTime.Now;
-		DateTime start = new DateTime();
-		DateTime end = new DateTime();
+		DateTime end = DateTime.Now;
+		DateTime today = end.AddDays(-6);
 
-		// Sunday will start the week.
-		switch (today.DayOfWeek)
-		{
-			case DayOfWeek.Sunday:
-				start = today;
-				end = start.AddDays(6);
-				break;
-
-			case DayOfWeek.Monday:
-				start = today.AddDays(-1);
-				end = start.AddDays(6);
-				break;
-
-			case DayOfWeek.Tuesday:
-				start = today.AddDays(-2);
-				end = start.AddDays(6);
-				break;
-
-			case DayOfWeek.Wednesday:
-				start = today.AddDays(-3);
-				end = start.AddDays(6);
-				break;
-
-			case DayOfWeek.Thursday:
-				start = today.AddDays(-4);
-				end = start.AddDays(6);
-				break;
-
-			case DayOfWeek.Friday:
-				start = today.AddDays(-5);
-				end = start.AddDays(6);
-				break;
-
-			case DayOfWeek.Saturday:
-				start = today.AddDays(-6);
-				end = start.AddDays(6);
-				break;
-		}
-		ReturnVal = $"{start.ToString("yyyy-MM-dd")},{end.ToString("yyyy-MM-dd")}";
+		ReturnVal = $"{today.ToString("yyyy-MM-dd")},{end.ToString("yyyy-MM-dd")}";
 	}
 }
