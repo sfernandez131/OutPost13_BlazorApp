@@ -1,12 +1,12 @@
-name: Build and deploy .NET Core app to Windows WebApp OutPost13
+name: Build and deploy .NET Core app to Windows WebApp outpost13
 on:
   push:
     branches:
     - master
 env:
-  AZURE_WEBAPP_NAME: OutPost13
+  AZURE_WEBAPP_NAME: outpost13
   AZURE_WEBAPP_PACKAGE_PATH: ./publish
-  AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.OutPost13_e745 }}
+  AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.outpost13_f3c7 }}
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 5.0.x
   WORKING_DIRECTORY: .
