@@ -17,7 +17,8 @@
 @foreach (APOD.Pod pics in Pods)
 {	
 		<h3>@pics.title - @pics.date</h3>
-		<img style="max-width:80vw; display: block; margin-left: auto; margin-right: auto;" src="@pics.url" @onclick="@(() => modal.Show(new APOD_IMG(pics.url).GetType(), @pics.title))"/>
+		<img style="max-width:75vw; display: block; margin-left: auto; margin-right: auto;" src="@pics.url" @onclick="@(() => modal.Show(new APOD_IMG(pics.url).GetType(), @pics.title))"/>
+		<p>@pics.url</p>
 		<p>@pics.explanation</p>
 }
 
@@ -37,11 +38,13 @@
 		var client = new RestClient($"https://api.nasa.gov/planetary/apod?api_key=FlMQpwnmPCZ1HNEAQXnPXeMyWdUZMhR253zEPLvl&thumbs=true&start_date={ReturnVal.Split(',').FirstOrDefault()}&end_date={ReturnVal.Split(',').LastOrDefault()}");
 		client.Timeout = -1;
 		var request = new RestRequest(Method.GET);
+		request.AddHeader("Access-Control-Allow-Origin", "*");
 		IRestResponse response = client.Execute(request);
 
 		if (response.IsSuccessful)
 		{
 			Pods = JsonConvert.DeserializeObject<List<APOD.Pod>>(response.Content);
+			Pods = Pods.OrderByDescending(d => d.date).ToList();
 		}
 	}
 

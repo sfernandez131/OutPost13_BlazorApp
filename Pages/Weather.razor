@@ -4,17 +4,35 @@
 @using OutPost13.Data
 @using System.Threading;
 @using BlazorAnimate;
+@using BlazorPro.BlazorSize;
 
 @inject WeatherForecastService ForecastService
 @inject Blazored.Localisation.Services.IBrowserDateTimeProvider browserDateTimeProvider
 
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
 <style>
+    /* iPhone 5/SE */
+    @@media only screen and (max-width: 330px) {
+        .hide{
+          display:none;
+        }
+    }
+    /* iPhone X */
+    @@media screen and (min-width: 375px) and (max-width: 375px) {
+        table {
+            margin-left: -10px;
+        }
+    }
     td {
         vertical-align: middle !important;
         text-align: center !important;
     }
     th {
         text-align: center !important;
+    }
+    table {
+        width: 100% !important;
     }
 </style>
 
@@ -50,13 +68,13 @@
         else
         {
             <Animate Animation="Animations.SlideLeft" Once="false" Duration="TimeSpan.FromSeconds(.5)" @ref="@anim" IsManual="false">
-                <table class="table">
+                <table class="table-responsive center">
                     <thead>
                         <tr>
                             <th>Date</th>
                             <th>Temp. (C)</th>
                             <th>Temp. (F)</th>
-                            <th></th>
+                            <th class="hide"></th>
                             <th>Summary</th>
                         </tr>
                     </thead>
@@ -67,14 +85,14 @@
                                 <td>@forecast.Date</td>
                                 <td>@forecast.TemperatureC</td>
                                 <td>@forecast.TemperatureF</td>
-                                <td><img src="@forecast.Icon" class="rounded-lg" style="max-height:80px; margin-right:5px"></td>
+                                <td class="hide"><img src="@forecast.Icon" class="rounded-lg" style="max-height:80px; margin-right:5px"></td>
                                 <td style="text-align:left !important;">@forecast.Summary</td>
                             </tr>
                             s = s == 0 ? 1 : 0;
                         }
                     </tbody>
                 </table>
-            </Animate>
+            </Animate>  
         }
     }
     @if (Daily)
@@ -103,15 +121,16 @@
         }
         else
         {
+
             <Animate Animation="Animations.SlideUp" Once="false" Duration="TimeSpan.FromSeconds(.5)" @ref="@anim" IsManual="false">
-                <table class="table-responsive" style="margin-left: -17px; overflow: visible;">
+                <table class="table-responsive center">
                     <thead>
                         <tr>
                             <th>Day Parts</th>
                             <th>Wind Speed</th>
                             <th>Temp. (C)</th>
                             <th>Temp. (F)</th>
-                            <th></th>
+                            <th class="hide"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -122,7 +141,7 @@
                                 <td>@forecast.WindSpeed @forecast.WindDirection</td>
                                 <td>@forecast.TemperatureC</td>
                                 <td>@forecast.TemperatureF</td>
-                                <td><img src="@forecast.Icon" class="rounded-lg" style="max-height:80px; margin-right:5px"></td>
+                                <td class="hide"><img src="@forecast.Icon" class="rounded-lg" style="max-height:80px; margin-right:5px"></td>
                             </tr>
                             <tr style="@GetBGColor(bgColorTR[s])" @onload="@(() => { bgColorTR[s] = bgColorTR[s] == true ? false : true; })">
                                 <td colspan="5" style="font-weight:700">Summary: @forecast.Summary</td>
@@ -132,12 +151,12 @@
                     </tbody>
                 </table>
             </Animate>
+            
         }
     }
 </div>
 
 @code {
-
     public TimeZoneInfo currentLocalTime = null;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
