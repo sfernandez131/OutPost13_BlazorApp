@@ -6,6 +6,7 @@
 @using BlazorAnimate;
 
 @inject WeatherForecastService ForecastService
+@inject Blazored.Localisation.Services.IBrowserDateTimeProvider browserDateTimeProvider
 
 <style>
     td {
@@ -22,7 +23,7 @@
 
 <div style="display: table; border-spacing: 2px;">
     <input style="border-radius: 25px; margin-right: 5px; outline: none; text-indent: 5px;" type="text" @bind-value="@ZIP" @bind-value:event="oninput" @onkeypress="@Enter" />
-    <button id="goBtn" @onclick="@(() => {GetWeatherForcast();})">Go</button>
+    <button id="goBtn" @onclick="@(() => {GetWeatherForcast(currentLocalTime);})">Go</button>
 
     @if (Hourly)
     {
@@ -133,6 +134,19 @@
 </div>
 
 @code {
+
+    public TimeZoneInfo currentLocalTime = null;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender) // Remove the firstRender check if you want the current local time displayed to continuously update.
+        {   // Leave the above firstRender check in place to ensure that the call to StateHasChanged() does not trigger an endless update loop.
+            var browserDateTime = await browserDateTimeProvider.GetInstance();
+            currentLocalTime = browserDateTime.LocalTimeZoneInfo;
+            StateHasChanged();
+        }
+    }
+
     // Get Hourly || Daily weather.
     bool Hourly = true;
     bool Daily = false;
@@ -187,14 +201,14 @@
     private List<DailyWeatherForecast> dForecasts;
     bool isProcessing = false;
 
-    public void GetWeatherForcast()
+    public void GetWeatherForcast(TimeZoneInfo curTZI)
     {
         if (string.IsNullOrEmpty(ZIP))
         {
             return;
         }
-        forecasts = ForecastService.GetHourlyForecast(ZIP);
-        dForecasts = ForecastService.GetDailyForecast(ZIP);
+        forecasts = ForecastService.GetHourlyForecast(ZIP, curTZI);
+        dForecasts = ForecastService.GetDailyForecast(ZIP, curTZI);
         StateHasChanged();
     }
 
@@ -204,8 +218,7 @@
         {
             isProcessing = true;
             StateHasChanged();
-            GetWeatherForcast();
+            GetWeatherForcast(currentLocalTime);
         }
     }
-    //
 }

@@ -13,7 +13,7 @@ namespace OutPost13.Data
     public class WeatherForecastService
     {
         public HashSet<int> hashMap = new HashSet<int>();
-        public List<WeatherForecast> GetHourlyForecast(string zip)
+        public List<WeatherForecast> GetHourlyForecast(string zip, TimeZoneInfo timeZoneInfo)
         {
             var WeatherListData = new List<WeatherForecast>();
 
@@ -24,7 +24,7 @@ namespace OutPost13.Data
             }
 
             var results = GetLatLongData(latLong);
-            var hourlyWeather = GetHourlyForecast(results);
+            var hourlyWeather = GetHourlyForecast(results, timeZoneInfo);
 
             if (hourlyWeather?.properties is null)
             {
@@ -47,7 +47,7 @@ namespace OutPost13.Data
             return WeatherListData;
         }
 
-        public List<DailyWeatherForecast> GetDailyForecast(string zip)
+        public List<DailyWeatherForecast> GetDailyForecast(string zip, TimeZoneInfo timeZoneInfo)
         {
             var WeatherListDataDaily = new List<DailyWeatherForecast>();
 
@@ -58,7 +58,7 @@ namespace OutPost13.Data
             }
 
             var results = GetLatLongData(latLong);
-            var dFore = GetDailyForecast(results);
+            var dFore = GetDailyForecast(results, timeZoneInfo);
 
             if (dFore?.properties is null)
                 return WeatherListDataDaily;
@@ -85,7 +85,7 @@ namespace OutPost13.Data
             return WeatherListDataDaily;
         }
 
-        private DailyWeatherData GetDailyForecast(WeatherPointsResponse results)
+        private DailyWeatherData GetDailyForecast(WeatherPointsResponse results, TimeZoneInfo clientTZ)
         {
             var client = new RestClient(results?.properties?.forecast);
             client.Timeout = -1;
@@ -98,13 +98,15 @@ namespace OutPost13.Data
                 // Process results back to local time from UTC.
                 var resp = JsonConvert.DeserializeObject<DailyWeatherData>(response.Content);
 
+
                 if (resp?.properties?.periods != null)
                 {
-                    var localTZ = TimeZoneInfo.Local;
                     foreach (var r in resp.properties.periods)
                     {
-                        r.startTime = TimeZoneInfo.ConvertTimeFromUtc(r.startTime, localTZ);
-                        r.endTime = TimeZoneInfo.ConvertTimeFromUtc(r.endTime, localTZ);
+                        r.startTime = DateTime.SpecifyKind(r.startTime, DateTimeKind.Utc);
+                        r.endTime = DateTime.SpecifyKind(r.endTime, DateTimeKind.Utc);
+                        r.startTime = TimeZoneInfo.ConvertTimeFromUtc(r.startTime, clientTZ);
+                        r.endTime = TimeZoneInfo.ConvertTimeFromUtc(r.endTime, clientTZ);
                     }
                 }
 
@@ -114,7 +116,7 @@ namespace OutPost13.Data
                 return null;
         }
 
-        private HourlyWeatherData GetHourlyForecast(WeatherPointsResponse results)
+        private HourlyWeatherData GetHourlyForecast(WeatherPointsResponse results, TimeZoneInfo clientTZ)
         {
             // These are off since it's using the server time and not the local time.
             var client = new RestClient(results.properties.forecastHourly);
@@ -130,11 +132,12 @@ namespace OutPost13.Data
 
                 if (resp?.properties?.periods != null)
                 {
-                    var localTZ = TimeZoneInfo.Local;
                     foreach (var r in resp.properties.periods)
                     {
-                        r.startTime = TimeZoneInfo.ConvertTimeFromUtc(r.startTime, localTZ);
-                        r.endTime = TimeZoneInfo.ConvertTimeFromUtc(r.endTime, localTZ);
+                        r.startTime = DateTime.SpecifyKind(r.startTime, DateTimeKind.Utc);
+                        r.endTime = DateTime.SpecifyKind(r.endTime, DateTimeKind.Utc);
+                        r.startTime = TimeZoneInfo.ConvertTimeFromUtc(r.startTime, clientTZ);
+                        r.endTime = TimeZoneInfo.ConvertTimeFromUtc(r.endTime, clientTZ);
                     }
                 }
 

@@ -1,3 +1,4 @@
+using Blazored.Localisation;
 using Blazored.Modal;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -30,6 +31,7 @@ namespace OutPost13
             services.AddSignalR();
             services.AddHttpClient();
             services.AddResponseCompression(options => options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/octet-stream" }));
+            services.AddBlazoredLocalisation(); // This adds the IBrowserDateTimeProvider to the DI container
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
