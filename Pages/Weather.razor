@@ -65,6 +65,10 @@
         {
             <p id="weatherPrompt"><em>Please Enter Your ZIP</em></p>
         }
+        else if (forecasts.Count == 0)
+        {
+            GetWeatherForcast(currentLocalTime);
+        }
         else
         {
             <Animate Animation="Animations.SlideLeft" Once="false" Duration="TimeSpan.FromSeconds(.5)" @ref="@anim" IsManual="false">
@@ -118,6 +122,10 @@
         else if (dForecasts == null && !isProcessing)
         {
             <p id="weatherPrompt"><em>Please Enter Your ZIP</em></p>
+        }
+        else if (dForecasts.Count == 0)
+        {
+            GetWeatherForcast(currentLocalTime);
         }
         else
         {
