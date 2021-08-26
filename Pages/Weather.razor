@@ -13,6 +13,9 @@
         vertical-align: middle !important;
         text-align: center !important;
     }
+    th {
+        text-align: center !important;
+    }
 </style>
 
 <h1>Weather Forecast</h1>
@@ -115,8 +118,8 @@
                         @foreach (var forecast in dForecasts)
                         {
                             <tr style="@GetBGColor(bgColorTR[s])" @onload="@(() => { bgColorTR[s] = bgColorTR[s] == true ? false : true; })">
-                                <td >@forecast.Name</td>
-                                <td >@forecast.WindSpeed @forecast.WindDirection</td>
+                                <td>@forecast.Name</td>
+                                <td>@forecast.WindSpeed @forecast.WindDirection</td>
                                 <td>@forecast.TemperatureC</td>
                                 <td>@forecast.TemperatureF</td>
                                 <td><img src="@forecast.Icon" class="rounded-lg" style="max-height:80px; margin-right:5px"></td>
