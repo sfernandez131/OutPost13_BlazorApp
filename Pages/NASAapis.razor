@@ -18,7 +18,7 @@
 {	
 		<h3>@pics.title - @pics.date</h3>
 		<img style="max-width:75vw; display: block; margin-left: auto; margin-right: auto;" src="@pics.url" @onclick="@(() => modal.Show(new APOD_IMG(pics.url).GetType(), @pics.title))"/>
-		<p>@pics.url</p>
+		<p style="word-wrap: break-word;">@pics.url</p>
 		<p>@pics.explanation</p>
 }
 
