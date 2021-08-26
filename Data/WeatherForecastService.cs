@@ -1,6 +1,8 @@
+using Json.Net;
 using LumenWorks.Framework.IO.Csv;
 using Newtonsoft.Json;
 using RestSharp;
+using RestSharp.Serializers;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -92,13 +94,29 @@ namespace OutPost13.Data
             IRestResponse response = client.Execute(request);
 
             if (response.IsSuccessful)
-                return JsonConvert.DeserializeObject<DailyWeatherData>(response.Content);
+            {
+                // Process results back to local time from UTC.
+                var resp = JsonConvert.DeserializeObject<DailyWeatherData>(response.Content);
+
+                if (resp?.properties?.periods != null)
+                {
+                    var localTZ = TimeZoneInfo.Local;
+                    foreach (var r in resp.properties.periods)
+                    {
+                        r.startTime = TimeZoneInfo.ConvertTimeFromUtc(r.startTime, localTZ);
+                        r.endTime = TimeZoneInfo.ConvertTimeFromUtc(r.endTime, localTZ);
+                    }
+                }
+
+                return resp;
+            }
             else
                 return null;
         }
 
         private HourlyWeatherData GetHourlyForecast(WeatherPointsResponse results)
         {
+            // These are off since it's using the server time and not the local time.
             var client = new RestClient(results.properties.forecastHourly);
             client.Timeout = -1;
             var request = new RestRequest(Method.GET);
@@ -106,7 +124,22 @@ namespace OutPost13.Data
             IRestResponse response = client.Execute(request);
 
             if (response.IsSuccessful)
-                return JsonConvert.DeserializeObject<HourlyWeatherData>(response.Content);
+            {
+                // Process results back to local time from UTC.
+                var resp = JsonConvert.DeserializeObject<HourlyWeatherData>(response.Content);
+
+                if (resp?.properties?.periods != null)
+                {
+                    var localTZ = TimeZoneInfo.Local;
+                    foreach (var r in resp.properties.periods)
+                    {
+                        r.startTime = TimeZoneInfo.ConvertTimeFromUtc(r.startTime, localTZ);
+                        r.endTime = TimeZoneInfo.ConvertTimeFromUtc(r.endTime, localTZ);
+                    }
+                }
+
+                return resp;
+            }
             else
                 return null;
         }
