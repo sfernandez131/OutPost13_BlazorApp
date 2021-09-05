@@ -37,6 +37,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="OsmApiClient" Version="0.0.7" />
     <PackageReference Include="RestSharp" Version="106.12.0" />
+    <PackageReference Include="System.Security.Cryptography.OpenSsl" Version="5.0.0" />
     <PackageReference Include="Twilio" Version="5.65.0" />
     <PackageReference Include="Twilio.AspNet.Core" Version="5.37.2" />
     <PackageReference Include="Unity" Version="5.11.10" />
