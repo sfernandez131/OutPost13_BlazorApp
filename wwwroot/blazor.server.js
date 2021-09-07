@@ -8076,7 +8076,9 @@
                         } finally {
                                 n = o = 0
                             }
-                        if (5 & i[0]) throw i[1];
+                        if (5 & i[0]) {
+                            //throw i[1];
+                        }
                         return {
                             value: i[0] ? i[1] : void 0,
                             done: !0
