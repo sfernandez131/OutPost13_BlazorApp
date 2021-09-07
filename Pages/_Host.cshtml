@@ -36,13 +36,13 @@
     </div>
 
     <script src="_content/BlazorAnimate/blazorAnimateInterop.js"></script>
-    <script>
+    <script src="/blazor.server.js"></script>
+        <script>
         if (navigator === undefined){
             console.log('fuck');
         }
-        navigator.serviceWorker.register('service-worker.js');
+        //navigator.serviceWorker.register('service-worker.js');
     </script>
-    <script src="/blazor.server.js"></script>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="/radar.js"></script>
     <script src="_content/Blazored.Modal/blazored.modal.js"></script> 
