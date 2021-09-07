@@ -6256,8 +6256,9 @@
                     }))
                 }(e)
         }
-    };
-    var o = /\W*Blazor:[^{]*(?'descriptor'.*)$/;
+        };
+
+    var o = "\W*Blazor:[^{]*(?<descriptor>.*)$";
 
     function i(e, t) {
         var n = e.currentElement;
