@@ -64,14 +64,14 @@
         else if (forecasts == null && !isProcessing)
         {
             <p id="weatherPrompt"><em>Please Enter Your ZIP</em></p>
-        }
+    }
         else if (forecasts.Count == 0)
         {
             GetWeatherForcast(currentLocalTime);
         }
         else
         {
-            <Animate Animation="Animations.SlideLeft" Once="false" Duration="TimeSpan.FromSeconds(.5)" @ref="@anim" IsManual="false">
+            //<Animate Animation="Animations.SlideLeft" Once="false" Duration="TimeSpan.FromSeconds(.5)" @ref="@anim" IsManual="false">
                 <table class="table-responsive center">
                     <thead>
                         <tr>
@@ -96,7 +96,7 @@
                         }
                     </tbody>
                 </table>
-            </Animate>  
+            //</Animate>  
         }
     }
     @if (Daily)
@@ -129,8 +129,7 @@
         }
         else
         {
-
-            <Animate Animation="Animations.SlideUp" Once="false" Duration="TimeSpan.FromSeconds(.5)" @ref="@anim" IsManual="false">
+            //<Animate Animation="Animations.SlideUp" Once="false" Duration="TimeSpan.FromSeconds(.5)" @ref="@anim" IsManual="false">
                 <table class="table-responsive center">
                     <thead>
                         <tr>
@@ -158,13 +157,12 @@
                         }
                     </tbody>
                 </table>
-            </Animate>
-            
+            //</Animate>
         }
     }
 </div>
 
-@code {
+@code { 
     public TimeZoneInfo currentLocalTime = null;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

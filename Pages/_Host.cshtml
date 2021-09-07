@@ -37,7 +37,23 @@
 
     <script src="_content/BlazorAnimate/blazorAnimateInterop.js"></script>
     <script src="/blazor.server.js"></script>
-        <script>
+    <script>
+        var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+        var os;
+        // Windows Phone must come first because its UA also contains "Android"
+        if (/windows phone/i.test(userAgent)) {
+            os = "Windows Phone";
+        }
+        if (/android/i.test(userAgent)) {
+            os = "Android";
+        }
+        // iOS detection from: http://stackoverflow.com/a/9039885/177710
+        if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+            os = "iOS";
+        }
+        os = "unknown";
+        console.log(os);
+
         if (navigator === 'undefined'){
             console.log('fuck');
         }else if (navigator.serviceWorker === 'undefined'){
@@ -46,7 +62,8 @@
         else{
             console.log(navigator);
         }
-        //navigator.serviceWorker.register('service-worker.js');
+        
+        navigator.serviceWorker.register('service-worker.js');
     </script>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="/radar.js"></script>
