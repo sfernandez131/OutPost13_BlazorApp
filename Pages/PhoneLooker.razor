@@ -1,0 +1,91 @@
+﻿@page "/phoneLookup"
+
+@using BlazorAnimate;
+@using Newtonsoft.Json
+@using RestSharp
+@using Data
+
+<h1>Counter App</h1>
+
+<input @bind-value="@phoneNum"  type="tel" placeholder="734-555-5555" />
+
+<Animate Animation="Animations.SlideLeft" @ref="anim" IsManual="true" Duration="TimeSpan.FromSeconds(.5)" Once="false">
+    <p>Name: @results.PhoneInfo.Provider.Name</p>
+    <p>City: @results.PhoneInfo.Provider.City</p>
+    <p>State: @results.PhoneInfo.Provider.State</p>
+    <p>Line Type: @results.PhoneInfo.Provider.LineType</p>
+    <p>SMS Address: @results.PhoneInfo.SMSAddress</p>
+    <p>MMS Address: @results.PhoneInfo.MMSAddress</p>
+    <p>Date First Seen: @results.PhoneInfo.DateFirstSeen</p>
+    <p>Date of Porting: @results.PhoneInfo.DateOfPorting</p>
+    <p>Note Description: @results.PhoneInfo.NoteDescriptions</p>
+</Animate>
+
+<button class="btn btn-primary" @onclick="@(() => {@LookerUp(); @Animate();})">@Click</button>
+
+
+@code {
+    public string phoneNum { get; set; }
+    public LookUp results { get; set; }
+
+    Animate anim = new Animate();
+
+    void Animate()
+    {
+        anim.Run();
+    }
+    public string Click { get; set; } = "Look'er Up!";
+
+    private void LookerUp()
+    {
+        var client = new RestClient($"https://trial.serviceobjects.com/gppl2/api.svc/PhoneInfo/{phoneNum}/full/WS77-QBS4-DPX1?format=json");
+        client.Timeout = -1;
+        var request = new RestRequest(Method.GET);
+        IRestResponse response = client.Execute(request);
+        
+        if (response.IsSuccessful)
+        {
+            results = JsonConvert.DeserializeObject<LookUp>(response.Content);
+            StateHasChanged();
+        }
+        else
+        {
+            results = new LookUp()
+            {
+                PhoneInfo = new PhoneInfo()
+                {
+                    Name = response.StatusCode,
+                    City = response.ErrorMessage
+                }
+            }
+        }
+    }
+
+    public class Provider
+    {
+        public string Name { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string Latitude { get; set; }
+        public string Longitude { get; set; }
+        public string LineType { get; set; }
+    }
+
+    public class PhoneInfo
+    {
+        public Provider Provider { get; set; }
+        public string SMSAddress { get; set; }
+        public string MMSAddress { get; set; }
+        public string DateFirstSeen { get; set; }
+        public string DateOfPorting { get; set; }
+        public string NoteCodes { get; set; }
+        public string NoteDescriptions { get; set; }
+        public string TokensUsed { get; set; }
+    }
+
+    public class LookUp
+    {
+        public PhoneInfo PhoneInfo { get; set; }
+    }
+
+}
