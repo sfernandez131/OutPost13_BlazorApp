@@ -54,10 +54,13 @@
             {
                 PhoneInfo = new PhoneInfo()
                 {
-                    Name = response.StatusCode,
-                    City = response.ErrorMessage
+                    Provider = new Provider()
+                    {
+                        Name = response.StatusCode.ToString(),
+                        City = response.ErrorMessage
+                    }
                 }
-            }
+            };
         }
     }
 
