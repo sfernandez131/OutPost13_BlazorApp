@@ -79,7 +79,7 @@
             <NavLink href="radar">
                 <button class="ghostBtn">Ext. Radar</button>
             </NavLink>
-            <button class="ghostBtn selected" @onclick="@(() => {isAQI = isAQI == true ? false : true;})">Hide AQI</button>
+            <button class="ghostBtn selected" @onclick="@(() => {isAQI = isAQI == true ? false : true;})">AQI</button>
         </div>
 
         if (isProcessing)
@@ -180,7 +180,7 @@
         <NavLink href="radar">
             <button class="ghostBtn">Ext. Radar</button>
         </NavLink>
-        <button class="ghostBtn" @onclick="@(() => {isAQI = isAQI == true ? false : true;})">Hide AQI</button>
+        <button class="ghostBtn" @onclick="@(() => {isAQI = isAQI == true ? false : true;})">AQI</button>
         </div>
 
         if (dForecasts is null && !isProcessing)
