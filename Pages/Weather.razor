@@ -60,6 +60,7 @@
 
 <h1>Weather Forecast</h1>
 <h6>Weather data provided by the <a style="text-decoration: none;" href="https://www.ncdc.noaa.gov/cdo-web/webservices/v2" target="_blank">NOAA API</a>.</h6>
+<h6>Air Quality data provided by the <a style="text-decoration: none;" href="https://openweathermap.org/api/air-pollution" target="_blank">OpenWeather API</a>.</h6>
 
 <p>This component demonstrates fetching data from a service and processing to a frontend.</p>
 <p>Enter your ZIP code to fetch weather data: </p>
@@ -80,16 +81,27 @@
             </NavLink>
             <button class="ghostBtn selected" @onclick="@(() => {isAQI = isAQI == true ? false : true;})">Hide AQI</button>
         </div>
-        if (forecasts == null)
+
+        if (isProcessing)
+        {
+            if(forecasts.Any() && forecasts.Any())
+            {
+                <Loader Show=false/>
+            }
+            <Loader Show=true/>
+        }
+        else if (forecasts == null)
         {
             <p>Please Enter Your ZIP</p>
         }
         else if (forecasts.Count == 0)
         {
+            <Loader Show=true/>
             GetWeatherForcast(currentLocalTime);
         }
         else
         {
+            <Loader Show=false/>
             if (isAQI)
             {
                 if (AirQaulityData != null)
@@ -147,7 +159,8 @@
                                 <td>@forecast.TemperatureC</td>
                                 <td>@forecast.TemperatureF</td>
                                 <td class="hide"><img src="@forecast.Icon" class="rounded-lg" style="max-height:80px; margin-right:5px"></td>
-                                <td style="text-align:left !important;">@forecast.Summary</td>
+                                @*<td style="text-align:left !important;">@forecast.Summary</td>*@
+                                <td>@forecast.Summary</td>
                             </tr>
                             s = s == 0 ? 1 : 0;
                         }
@@ -171,17 +184,17 @@
 
         if (dForecasts is null && !isProcessing)
         {
-            <Loader Show=true/>
+            @*<Loader Show=true/>*@
             <p id="weatherPrompt"><em>Please Enter Your ZIP</em></p>
         }
         else if (dForecasts == null && isProcessing)
         {
-            <Loader Show=true/>
+            @*<Loader Show=true/>*@
             <p id="weatherPrompt"><em>ZIP could not be found...</em></p>
         }
         else if (dForecasts == null && !isProcessing)
         {
-            <Loader Show=true/>
+            @*<Loader Show=true/>*@
             <p id="weatherPrompt"><em>Please Enter Your ZIP</em></p>
         }
         else if (dForecasts.Count == 0)
@@ -264,8 +277,6 @@
 </div>
 
 @code {
-
-    public bool isLoading = false;
     public TimeZoneInfo currentLocalTime = null;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -350,7 +361,6 @@
 
     public void GetWeatherForcast(TimeZoneInfo curTZI)
     {
-        isLoading = true;
         StateHasChanged();
         if (string.IsNullOrEmpty(ZIP))
         {
@@ -359,6 +369,7 @@
         GetAirQual();
         forecasts = ForecastService.GetHourlyForecast(ZIP, curTZI);
         dForecasts = ForecastService.GetDailyForecast(ZIP, curTZI);
+        isProcessing = false;
         StateHasChanged();
     }
 
