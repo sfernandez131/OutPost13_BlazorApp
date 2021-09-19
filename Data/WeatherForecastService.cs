@@ -147,7 +147,7 @@ namespace OutPost13.Data
                 return null;
         }
 
-        private WeatherPointsResponse GetLatLongData(string latLong)
+        public WeatherPointsResponse GetLatLongData(string latLong)
         {
             var client = new RestClient($"https://api.weather.gov/points/{latLong}");
             client.Timeout = -1;
@@ -162,7 +162,7 @@ namespace OutPost13.Data
                 return null;
         }
 
-        private string GetLatLong(string zip)
+        public string GetLatLong(string zip)
         {
             var csvTable = new DataTable();
             string latLon = "";
@@ -186,8 +186,62 @@ namespace OutPost13.Data
 
             return latLon;
         }
+
+        public AQI GetAQI(string lat, string lon)
+        {
+            var client = new RestClient($"http://api.openweathermap.org/data/2.5/air_pollution?lat={lat}&lon={lon}&appid=1dd5a6cc376adfc48dec03200886fb4e");
+            client.Timeout = -1;
+            var request = new RestRequest(Method.GET);
+            IRestResponse response = client.Execute(request);
+
+            if (response.IsSuccessful)
+            {
+                return JsonConvert.DeserializeObject<AQI>(response.Content);
+            }
+            else
+            {
+                return new AQI();
+            }
+        }
     }
 
+
+    public class AQI
+    {
+        public Coord coord { get; set; }
+        public List[] list { get; set; }
+
+
+        public class Coord
+        {
+            public float lon { get; set; }
+            public float lat { get; set; }
+        }
+
+        public class List
+        {
+            public Main main { get; set; }
+            public Components components { get; set; }
+            public int dt { get; set; }
+        }
+
+        public class Main
+        {
+            public int aqi { get; set; }
+        }
+
+        public class Components
+        {
+            public float co { get; set; }
+            public float no { get; set; }
+            public float no2 { get; set; }
+            public float o3 { get; set; }
+            public float so2 { get; set; }
+            public float pm2_5 { get; set; }
+            public float pm10 { get; set; }
+            public float nh3 { get; set; }
+        }
+    }
 
     public class WeatherPointsResponse
     {

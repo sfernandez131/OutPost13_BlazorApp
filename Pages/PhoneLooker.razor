@@ -7,7 +7,10 @@
 
 <h1>Reverse Phone Number Lookup</h1>
 
-<input @bind-value="@phoneNum"  type="tel" placeholder="734-555-5555" />
+<div>
+    <input @bind-value="@phoneNum" type="tel" placeholder="734-555-5555" />
+    <button class="btn btn-primary" @onclick="@(() => {@LookerUp(); @Animate();})">@Click</button>
+</div>
 
 <Animate Animation="Animations.SlideLeft" @ref="anim" IsManual="true" Duration="TimeSpan.FromSeconds(.5)" Once="false">
     <p>Name: @results.PhoneInfo.Provider.Name</p>
@@ -20,9 +23,6 @@
     <p>Date of Porting: @results.PhoneInfo.DateOfPorting</p>
     <p>Note Description: @results.PhoneInfo.NoteDescriptions</p>
 </Animate>
-
-<button class="btn btn-primary" @onclick="@(() => {@LookerUp(); @Animate();})">@Click</button>
-
 
 @code {
     public string phoneNum { get; set; }

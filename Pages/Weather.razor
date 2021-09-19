@@ -5,6 +5,7 @@
 @using System.Threading;
 @using BlazorAnimate;
 @using BlazorPro.BlazorSize;
+@using System.Linq
 
 @inject WeatherForecastService ForecastService
 @inject Blazored.Localisation.Services.IBrowserDateTimeProvider browserDateTimeProvider
@@ -34,6 +35,27 @@
     table {
         width: 100% !important;
     }
+
+    button {
+        border: none;
+        background: none;
+        text-transform: uppercase;
+        height: 100%;
+        font-weight: 700;
+        color: black;
+        letter-spacing: 1px;
+        font-size: inherit;
+        transition: all 0.3s;
+        outline: none;
+        border-left: 1px solid;
+        border-right: 1px solid;
+        background-color: white;
+    }
+
+    button:hover {
+        color: white;
+        background: grey;
+    }
 </style>
 
 <h1>Weather Forecast</h1>
@@ -48,29 +70,64 @@
 
     @if (Hourly)
     {
-        <div class="w3-bar w3-black">
-            <button id="swp" class="w3-bar-item w3-button" @onclick="@(() => { GetTab(); })">Switch to Daily</button>        
-        @*<NavLink href="radarr">
-            <button id="swp" class="w3-bar-item w3-button">Radar</button>
-        </NavLink>*@
-        <NavLink href="radar">
-            <button id="swp" class="w3-bar-item w3-button">External Radar Page</button>
-        </NavLink>
+        <div class="w3-bar w3-black nospace">
+            <button class="ghostBtn selected" @onclick="@(() => { GetTab(); })">Daily</button>        
+            @*<NavLink href="radarr">
+                <button id="swp" class="w3-bar-item w3-button">Radar</button>
+            </NavLink>*@
+            <NavLink href="radar">
+                <button class="ghostBtn">Ext. Radar</button>
+            </NavLink>
+            <button class="ghostBtn selected" @onclick="@(() => {isAQI = isAQI == true ? false : true;})">Hide AQI</button>
         </div>
-        if (forecasts == null && isProcessing)
+        if (forecasts == null)
         {
-            <p id="weatherPrompt"><em>ZIP could not be found...</em></p>
+            <p>Please Enter Your ZIP</p>
         }
-        else if (forecasts == null && !isProcessing)
-        {
-            <p id="weatherPrompt"><em>Please Enter Your ZIP</em></p>
-    }
         else if (forecasts.Count == 0)
         {
             GetWeatherForcast(currentLocalTime);
         }
         else
         {
+            if (isAQI)
+            {
+                if (AirQaulityData != null)
+                {
+                    <table class="table-responsive center">
+                        <thead>
+                            <tr>
+                                <th>Air Quality</th>
+                                <th>CO</th>
+                                <th>NO</th>
+                                <th>NO2</th>
+                                <th>O3</th>
+                                <th>SO2</th>
+                                @*<th>PM2_5</th>
+                                <th>PM10</th>*@
+                                <th>NH3</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var aqi in AirQaulityData.list)
+                            {
+                                <tr style="@GetBGColor(bgColorTR[s])" @onload="@(() => { bgColorTR[s] = bgColorTR[s] == true ? false : true; })">
+                                    <td>@aqi.main.aqi</td>
+                                    <td>@aqi.components.co</td>
+                                    <td>@aqi.components.no</td>
+                                    <td>@aqi.components.no2</td>
+                                    <td>@aqi.components.o3</td>
+                                    <td>@aqi.components.so2</td>
+                                    @*<td>@aqi.components.pm2_5</td>
+                                    <td>@aqi.components.pm10</td>*@
+                                    <td>@aqi.components.nh3</td>
+                                </tr>
+                                s = s == 0 ? 1 : 0;
+                            }
+                        </tbody>
+                    </table>
+                }
+            }
             //<Animate Animation="Animations.SlideLeft" Once="false" Duration="TimeSpan.FromSeconds(.5)" @ref="@anim" IsManual="false">
                 <table class="table-responsive center">
                     <thead>
@@ -102,33 +159,77 @@
     @if (Daily)
     {
         <div class="w3-bar w3-black">
-            <button id="swp" class="w3-bar-item w3-button" @onclick="@(() => { GetTab(); })">Switch to Hourly</button>
+            <button class="ghostBtn" @onclick="@(() => { GetTab(); })">Hourly</button>
         @*<NavLink href="radarr">
             <button id="swp" class="w3-bar-item w3-button">Radar</button>
         </NavLink>*@
         <NavLink href="radar">
-            <button id="swp" class="w3-bar-item w3-button">External Radar Page</button>
+            <button class="ghostBtn">Ext. Radar</button>
         </NavLink>
+        <button class="ghostBtn" @onclick="@(() => {isAQI = isAQI == true ? false : true;})">Hide AQI</button>
         </div>
 
         if (dForecasts is null && !isProcessing)
         {
+            <Loader Show=true/>
             <p id="weatherPrompt"><em>Please Enter Your ZIP</em></p>
         }
         else if (dForecasts == null && isProcessing)
         {
+            <Loader Show=true/>
             <p id="weatherPrompt"><em>ZIP could not be found...</em></p>
         }
         else if (dForecasts == null && !isProcessing)
         {
+            <Loader Show=true/>
             <p id="weatherPrompt"><em>Please Enter Your ZIP</em></p>
         }
         else if (dForecasts.Count == 0)
         {
+            <Loader Show=true/>
             GetWeatherForcast(currentLocalTime);
         }
         else
         {
+            <Loader Show=false/>
+            if (isAQI)
+            {
+                if (AirQaulityData != null)
+                {
+                    <table class="table-responsive center">
+                        <thead>
+                            <tr>
+                                <th>Air Quality</th>
+                                <th>CO</th>
+                                <th>NO</th>
+                                <th>NO2</th>
+                                <th>O3</th>
+                                <th>SO2</th>
+                               @*<th>PM2_5</th>
+                                <th>PM10</th>*@
+                                <th>NH3</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var aqi in AirQaulityData.list)
+                            {
+                                <tr style="@GetBGColor(bgColorTR[s])" @onload="@(() => { bgColorTR[s] = bgColorTR[s] == true ? false : true; })">
+                                    <td>@aqi.main.aqi</td>
+                                    <td>@aqi.components.co</td>
+                                    <td>@aqi.components.no</td>
+                                    <td>@aqi.components.no2</td>
+                                    <td>@aqi.components.o3</td>
+                                    <td>@aqi.components.so2</td>
+                                    @*<td>@aqi.components.pm2_5</td>
+                                    <td>@aqi.components.pm10</td>*@
+                                    <td>@aqi.components.nh3</td>
+                                </tr>
+                                s = s == 0 ? 1 : 0;
+                            }
+                        </tbody>
+                    </table>
+                }
+            }
             //<Animate Animation="Animations.SlideUp" Once="false" Duration="TimeSpan.FromSeconds(.5)" @ref="@anim" IsManual="false">
                 <table class="table-responsive center">
                     <thead>
@@ -162,7 +263,9 @@
     }
 </div>
 
-@code { 
+@code {
+
+    public bool isLoading = false;
     public TimeZoneInfo currentLocalTime = null;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -175,15 +278,32 @@
         }
     }
 
+    // Get Air Quality Index
+    bool isAQI = true;
+    AQI AirQaulityData;
+
+    public void GetAirQual()
+    {
+        isAQI = true;
+        if (string.IsNullOrEmpty(ZIP))
+            return;
+
+        string latLong = ForecastService.GetLatLong(ZIP);
+        if (string.IsNullOrEmpty(latLong) || latLong.Equals(","))
+            return;
+
+        AirQaulityData = ForecastService.GetAQI(latLong.Split(',').FirstOrDefault(), latLong.Split(',').LastOrDefault());
+    }
+
     // Get Hourly || Daily weather.
     bool Hourly = true;
     bool Daily = false;
 
     void GetTab()
     {
+        isAQI = false;
         if (Daily)
         {
-            
             Hourly = true;
             Daily = false;
         }
@@ -221,7 +341,6 @@
         else
             return "background-color:white";
     }
-    //
 
     // Process weather data.
     private string ZIP;
@@ -231,10 +350,13 @@
 
     public void GetWeatherForcast(TimeZoneInfo curTZI)
     {
+        isLoading = true;
+        StateHasChanged();
         if (string.IsNullOrEmpty(ZIP))
         {
             return;
         }
+        GetAirQual();
         forecasts = ForecastService.GetHourlyForecast(ZIP, curTZI);
         dForecasts = ForecastService.GetDailyForecast(ZIP, curTZI);
         StateHasChanged();
