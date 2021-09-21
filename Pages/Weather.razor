@@ -1,6 +1,7 @@
 ﻿@page "/weather"
 
 @using Microsoft.AspNetCore.Mvc
+@using OutPost13.Components
 @using OutPost13.Data
 @using System.Threading;
 @using BlazorAnimate;
@@ -56,6 +57,29 @@
         color: white;
         background: grey;
     }
+
+    .spinnerr {
+    border: 16px solid silver;
+    border-top: 16px solid #337AB7;
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    animation: spin 700ms linear infinite;
+    top: 40%;
+    left: 55%;
+    position: absolute;
+}
+
+    @@keyframes spin {
+        0% {
+            transform: rotate(0deg)
+        }
+
+        100% {
+            transform: rotate(360deg)
+        }
+    }
+
 </style>
 
 <h1>Weather Forecast</h1>
@@ -66,8 +90,10 @@
 <p>Enter your ZIP code to fetch weather data: </p>
 
 <div style="display: table; border-spacing: 2px;">
-    <input style="border-radius: 25px; margin-right: 5px; outline: none; text-indent: 5px;" type="text" @bind-value="@ZIP" @bind-value:event="oninput" @onkeypress="@Enter" />
-    <button id="goBtn" @onclick="@(() => {GetWeatherForcast(currentLocalTime);})">Go</button>
+    <EditForm Model=@Fuck OnSubmit=@GetWeatherForcast>
+        <input style="border-radius: 25px; margin-right: 5px; outline: none; text-indent: 5px;" type="text" @bind-value="@ZIP" @bind-value:event="oninput" />
+        <input id="goBtn" type="submit" value="Go" @onclick="@(() => { CheckLoaderState(); })"/>
+    </EditForm>
 
     @if (Hourly)
     {
@@ -82,26 +108,27 @@
             <button class="ghostBtn selected" @onclick="@(() => {isAQI = isAQI == true ? false : true;})">AQI</button>
         </div>
 
-        if (isProcessing)
+        if (showLoader)
         {
-            if(forecasts.Any() && forecasts.Any())
-            {
-                <Loader Show=false/>
-            }
-            <Loader Show=true/>
+            <Loader Show=@showLoader/>
+    }
+        if (forecasts != null && forecasts.Count == 0)
+        {
+            showLoader = true;
+            <Loader Show=@showLoader/>
         }
-        else if (forecasts == null)
+        
+        if (forecasts == null)
         {
-            <p>Please Enter Your ZIP</p>
+            <p><em>Please Enter Your ZIP</em></p>
         }
         else if (forecasts.Count == 0)
         {
-            <Loader Show=true/>
-            GetWeatherForcast(currentLocalTime);
+            GetWeatherForcast();
         }
-        else
+        else if (forecasts.Any())
         {
-            <Loader Show=false/>
+            <Loader Show=@showLoader/>
             if (isAQI)
             {
                 if (AirQaulityData != null)
@@ -174,38 +201,43 @@
     {
         <div class="w3-bar w3-black">
             <button class="ghostBtn" @onclick="@(() => { GetTab(); })">Hourly</button>
-        @*<NavLink href="radarr">
-            <button id="swp" class="w3-bar-item w3-button">Radar</button>
-        </NavLink>*@
-        <NavLink href="radar">
-            <button class="ghostBtn">Ext. Radar</button>
-        </NavLink>
-        <button class="ghostBtn" @onclick="@(() => {isAQI = isAQI == true ? false : true;})">AQI</button>
+            @*<NavLink href="radarr">
+                <button id="swp" class="w3-bar-item w3-button">Radar</button>
+            </NavLink>*@
+            <NavLink href="radar">
+                <button class="ghostBtn">Ext. Radar</button>
+            </NavLink>
+            <button class="ghostBtn" @onclick="@(() => {isAQI = isAQI == true ? false : true;})">AQI</button>
         </div>
 
-        if (dForecasts is null && !isProcessing)
+        if (showLoader)
         {
-            @*<Loader Show=true/>*@
+            <Loader Show=@showLoader/>
+        }
+        if (dForecasts != null && dForecasts.Count == 0)
+        {
+            showLoader = true;
+            <Loader Show=@showLoader/>
+        }
+
+        if (dForecasts is null)
+        {
+            <p id="weatherPrompt"><em>Please Enter Your ZIP</em></p>
+        }
+        else if (dForecasts is null && !isProcessing)
+        {
             <p id="weatherPrompt"><em>Please Enter Your ZIP</em></p>
         }
         else if (dForecasts == null && isProcessing)
         {
-            @*<Loader Show=true/>*@
             <p id="weatherPrompt"><em>ZIP could not be found...</em></p>
-        }
-        else if (dForecasts == null && !isProcessing)
-        {
-            @*<Loader Show=true/>*@
-            <p id="weatherPrompt"><em>Please Enter Your ZIP</em></p>
         }
         else if (dForecasts.Count == 0)
         {
-            <Loader Show=true/>
-            GetWeatherForcast(currentLocalTime);
+            GetWeatherForcast();
         }
         else
         {
-            <Loader Show=false/>
             if (isAQI)
             {
                 if (AirQaulityData != null)
@@ -279,7 +311,10 @@
 </div>
 
 @code {
+    public bool showLoader = false;
     public TimeZoneInfo currentLocalTime = null;
+
+    string Fuck = "";
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -289,6 +324,12 @@
             currentLocalTime = browserDateTime.LocalTimeZoneInfo;
             StateHasChanged();
         }
+    }
+
+    public void CheckLoaderState()
+    {
+        showLoader = showLoader ? false : true;
+        StateHasChanged();
     }
 
     // Get Air Quality Index
@@ -361,27 +402,19 @@
     private List<DailyWeatherForecast> dForecasts;
     bool isProcessing = false;
 
-    public void GetWeatherForcast(TimeZoneInfo curTZI)
+    public void GetWeatherForcast()
     {
-        StateHasChanged();
         if (string.IsNullOrEmpty(ZIP))
         {
             return;
         }
         GetAirQual();
-        forecasts = ForecastService.GetHourlyForecast(ZIP, curTZI);
-        dForecasts = ForecastService.GetDailyForecast(ZIP, curTZI);
+        forecasts = ForecastService.GetHourlyForecast(ZIP, currentLocalTime);
+        dForecasts = ForecastService.GetDailyForecast(ZIP, currentLocalTime);
         isProcessing = false;
-        StateHasChanged();
-    }
 
-    public void Enter(KeyboardEventArgs e)
-    {
-        if (e.Code == "Enter" || e.Code == "NumpadEnter")
-        {
-            isProcessing = true;
-            StateHasChanged();
-            GetWeatherForcast(currentLocalTime);
-        }
+        //Thread.Sleep(5000);
+        showLoader = false;
+        StateHasChanged();
     }
 }

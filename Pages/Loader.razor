@@ -1,6 +1,42 @@
+<style>
+    .spinnerr {
+        border: 16px solid silver;
+        border-top: 16px solid #337AB7;
+        border-radius: 50%;
+        width: 80px;
+        height: 80px;
+        animation: spin 700ms linear infinite;
+        top: 40vh;
+        left: 40vw;
+        position: absolute;
+        z-index: 3;
+    }
+
+    .main:before {
+        position: absolute;
+        content:"";
+        width: 100%;
+        background: #4a4948;
+        opacity: 0.6;
+        height: 100%;
+        left:0;
+        z-index: 1;
+    }
+
+    @@ keyframes spin {
+        0% {
+            transform: rotate(0deg)
+        }
+
+        100% {
+            transform: rotate(360deg)
+        }
+    }
+</style>
+
 @if (Show)
 {
-   <div class="spinner"></div> 
+    <div class="spinnerr">  fuck</div> 
 }
 
 @code { 
