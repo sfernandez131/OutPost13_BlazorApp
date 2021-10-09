@@ -16,14 +16,33 @@
 
 @foreach (APOD.Pod pics in Pods)
 {	
+	if (pics.media_type == "video")
+	{
+		<h3>@pics.title - @pics.date</h3>
+		<iframe height="100%" style="display: block; margin-left: auto; margin-right: auto;" src="@pics.url" title="@pics.title"/>
+		<p style="word-wrap: break-word;">@pics.url</p>
+		<p>@pics.explanation</p>
+}
+	else
+	{
 		<h3>@pics.title - @pics.date</h3>
 		<img style="max-width:75vw; display: block; margin-left: auto; margin-right: auto;" src="@pics.url" @onclick="@(() => modal.Show(new APOD_IMG(pics.url).GetType(), @pics.title))"/>
 		<p style="word-wrap: break-word;">@pics.url</p>
 		<p>@pics.explanation</p>
+	}
 }
 
 @code {
-	//
+
+	public int Height { get; set; }
+	public int Width { get; set; }
+
+    public class WindowDimension
+    {
+        public int Width { get; set; }
+        public int Height { get; set; }
+    }
+
 	protected override Task OnInitializedAsync()
 	{
 		GetStartAndEndOfWeek();
@@ -35,6 +54,7 @@
 	private List<APOD.Pod> Pods = new();
 	void GetWeekOfPictures()
 	{
+		//var client = new RestClient("https://api.nasa.gov/planetary/apod?api_key=FlMQpwnmPCZ1HNEAQXnPXeMyWdUZMhR253zEPLvl&thumbs=true&start_date=2021-07-12&end_date=2021-07-16");
 		var client = new RestClient($"https://api.nasa.gov/planetary/apod?api_key=FlMQpwnmPCZ1HNEAQXnPXeMyWdUZMhR253zEPLvl&thumbs=true&start_date={ReturnVal.Split(',').FirstOrDefault()}&end_date={ReturnVal.Split(',').LastOrDefault()}");
 		client.Timeout = -1;
 		var request = new RestRequest(Method.GET);
