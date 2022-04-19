@@ -1,9 +1,10 @@
 ﻿@page "/solsystem"
 
+@using Microsoft.AspNetCore.Http
 @using RestSharp;
 @using Newtonsoft.Json;
 
-@inject NavigationManager NavManager
+@inject NavigationManager NavMan
 
 <h1>Walking to the mine...</h1>
 
@@ -21,7 +22,7 @@
             address = JsonConvert.DeserializeObject(response.Content).ToString();
         }
 
-        NavManager.NavigateTo(address);
+        NavMan.NavigateTo("http://" + address, true);
     }
 
     private class IpWatcherData
