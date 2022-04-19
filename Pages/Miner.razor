@@ -1,0 +1,31 @@
+﻿@page "/solsystem"
+
+@using RestSharp;
+@using Newtonsoft.Json;
+
+@inject NavigationManager NavManager
+
+<h1>Walking to the mine...</h1>
+
+@code {
+    protected override void OnInitialized()
+    {
+        var client = new RestClient("https://goldstarappservices.com/gswebapi/api/Testing/IPWatch");
+        client.Timeout = -1;
+        var request = new RestRequest(Method.GET);
+        IRestResponse response = client.Execute(request);
+
+        string address = "";
+        if (response.IsSuccessful)
+        {
+            address = JsonConvert.DeserializeObject(response.Content).ToString();
+        }
+
+        NavManager.NavigateTo(address);
+    }
+
+    private class IpWatcherData
+    {
+        public string address { get; set; }
+    }
+}
