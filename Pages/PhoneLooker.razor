@@ -7,33 +7,49 @@
 
 <h1>Reverse Phone Number Lookup</h1>
 
-<div>
-    <input @bind-value="@phoneNum" type="tel" placeholder="734-555-5555" />
-    <button class="btn btn-primary" @onclick="@(() => {@LookerUp(); @Animate();})">@Click</button>
+<div style="margin-top: 2%">
+    <input @bind-value="@phoneNum" type="tel" placeholder="555-555-5555" />
+    <button class="btn btn-primary" @onclick="@(() => {@LookerUpV2();})">@Click</button>
 </div>
 
-<Animate Animation="Animations.SlideLeft" @ref="anim" IsManual="true" Duration="TimeSpan.FromSeconds(.5)" Once="false">
-    <p>Name: @results.PhoneInfo.Provider.Name</p>
-    <p>City: @results.PhoneInfo.Provider.City</p>
-    <p>State: @results.PhoneInfo.Provider.State</p>
-    <p>Line Type: @results.PhoneInfo.Provider.LineType</p>
-    <p>SMS Address: @results.PhoneInfo.SMSAddress</p>
-    <p>MMS Address: @results.PhoneInfo.MMSAddress</p>
-    <p>Date First Seen: @results.PhoneInfo.DateFirstSeen</p>
-    <p>Date of Porting: @results.PhoneInfo.DateOfPorting</p>
-    <p>Note Description: @results.PhoneInfo.NoteDescriptions</p>
-</Animate>
+
+@if (resultsV2 != null)
+{
+    if (resultsV2Error != null)
+    {
+        <p style="margin-top: 5%">API returned an error: @resultsV2Error.errors[0].detail Try again.</p>
+    }
+    else if (resultsV2.data == null)
+    {
+        <p style="margin-top: 5%">Nothing found for this number.</p>
+    }
+    else
+    {
+        <p style="margin-top: 5%">Name: @resultsV2.data.carrier.name</p>
+        <p>City: @resultsV2.data.portability.city</p>
+        <p>State: @resultsV2.data.portability.state</p>
+        <p>Line Type: @resultsV2.data.portability.line_type</p>
+        <p>SMS Address: @resultsV2.data.national_format</p>
+        <p>Caller Name: @resultsV2.data.caller_name.caller_name</p>
+    }
+}
+else
+{
+    if (resultsV2Error != null)
+    {
+        <p style="margin-top: 5%">API returned an error: @resultsV2Error.errors[0].detail Try again.</p>
+    }
+    else
+    {
+        <p style="margin-top: 5%">Search that phone number!</p>
+    }
+}
 
 @code {
     public string phoneNum { get; set; }
     public LookUp results { get; set; }
-
-    Animate anim = new Animate();
-
-    void Animate()
-    {
-        anim.Run();
-    }
+    public TelnyxLookUpResults resultsV2 { get; set; }
+    public TelnyxLookUpError resultsV2Error { get; set; }
     public string Click { get; set; } = "Look'er Up!";
 
     private void LookerUp()
@@ -42,7 +58,7 @@
         client.Timeout = -1;
         var request = new RestRequest(Method.GET);
         IRestResponse response = client.Execute(request);
-        
+
         if (response.IsSuccessful)
         {
             results = JsonConvert.DeserializeObject<LookUp>(response.Content);
@@ -62,6 +78,27 @@
                 }
             };
         }
+    }
+
+    private void LookerUpV2()
+    {
+        var client = new RestClient($"https://api.telnyx.com/v2/number_lookup/{phoneNum}?type=carrier&type=caller-name");
+        client.Timeout = -1;
+        var request = new RestRequest(Method.GET);
+        request.AddHeader("Authorization", "Bearer KEY0180FBE3DF6D2EBF9A75BC2005F2EC7C_PbLgnC3f1jLVMIZl9NWdDO");
+        IRestResponse response = client.Execute(request);
+
+        if (response.IsSuccessful)
+        {
+            resultsV2 = JsonConvert.DeserializeObject<TelnyxLookUpResults>(response.Content);
+            StateHasChanged();
+        }
+        else
+        {
+            resultsV2Error = JsonConvert.DeserializeObject<TelnyxLookUpError>(response.Content);
+            StateHasChanged();
+        }
+    
     }
 
     public class Provider
@@ -91,4 +128,65 @@
         public PhoneInfo PhoneInfo { get; set; }
     }
 
+    public class TelnyxLookUpError
+    {
+        public Error[] errors { get; set; }
+
+        public class Error
+        {
+            public string code { get; set; }
+            public string title { get; set; }
+            public string detail { get; set; }
+        }
+    }
+
+    public class TelnyxLookUpResults
+    {
+        public Data data { get; set; }
+
+        public class Data
+        {
+            public string country_code { get; set; }
+            public string national_format { get; set; }
+            public string phone_number { get; set; }
+            public object fraud { get; set; }
+            public Carrier carrier { get; set; }
+            public Caller_Name caller_name { get; set; }
+            public object nnid_override { get; set; }
+            public Portability portability { get; set; }
+            public string record_type { get; set; }
+        }
+
+        public class Carrier
+        {
+            public string mobile_country_code { get; set; }
+            public string mobile_network_code { get; set; }
+            public string name { get; set; }
+            public string type { get; set; }
+            public object error_code { get; set; }
+        }
+
+        public class Caller_Name
+        {
+            public string caller_name { get; set; }
+            public object error_code { get; set; }
+        }
+
+        public class Portability
+        {
+            public object lrn { get; set; }
+            public string ported_status { get; set; }
+            public string ported_date { get; set; }
+            public string ocn { get; set; }
+            public string line_type { get; set; }
+            public string spid { get; set; }
+            public string spid_carrier_name { get; set; }
+            public string spid_carrier_type { get; set; }
+            public string altspid { get; set; }
+            public string altspid_carrier_name { get; set; }
+            public string altspid_carrier_type { get; set; }
+            public string city { get; set; }
+            public string state { get; set; }
+        }
+    }
 }
