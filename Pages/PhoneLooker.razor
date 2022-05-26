@@ -8,10 +8,10 @@
 <h1>Reverse Phone Number Lookup</h1>
 
 <div style="margin-top: 2%">
+	<input @bind-value="@countryCode" type="number" max="1000" placeholder="1" style="width: 60px"/>
     <input @bind-value="@phoneNum" type="tel" placeholder="555-555-5555" />
     <button class="btn btn-primary" @onclick="@(() => {@LookerUpV2();})">@Click</button>
 </div>
-
 
 @if (resultsV2 != null)
 {
@@ -46,6 +46,7 @@ else
 }
 
 @code {
+	public int countryCode { get; set; } = 1;
     public string phoneNum { get; set; }
     public LookUp results { get; set; }
     public TelnyxLookUpResults resultsV2 { get; set; }
@@ -82,7 +83,7 @@ else
 
     private void LookerUpV2()
     {
-        var client = new RestClient($"https://api.telnyx.com/v2/number_lookup/{phoneNum}?type=carrier&type=caller-name");
+        var client = new RestClient($"https://api.telnyx.com/v2/number_lookup/{countryCode + phoneNum}?type=carrier&type=caller-name");
         client.Timeout = -1;
         var request = new RestRequest(Method.GET);
         request.AddHeader("Authorization", "Bearer KEY0180FBE3DF6D2EBF9A75BC2005F2EC7C_PbLgnC3f1jLVMIZl9NWdDO");
@@ -90,7 +91,15 @@ else
 
         if (response.IsSuccessful)
         {
-            resultsV2 = JsonConvert.DeserializeObject<TelnyxLookUpResults>(response.Content);
+            try
+            {
+                resultsV2 = JsonConvert.DeserializeObject<TelnyxLookUpResults>(response.Content);
+            }
+            catch (Exception ex)
+            {
+                resultsV2 = new TelnyxLookUpResults();
+                Console.WriteLine(ex.Message);
+            }
             StateHasChanged();
         }
         else
